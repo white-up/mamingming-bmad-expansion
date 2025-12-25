@@ -1,0 +1,7 @@
+name: "Distributed System Test Specs"
+code :  "mamingming-bmad-expansion"
+description: "BMAD研发拓展模块"
+version: "1.0.0"
+type: "standalone"
+unitary: true
+author: "maxiangming"

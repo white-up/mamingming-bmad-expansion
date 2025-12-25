@@ -1,0 +1,34 @@
+# Workflow 元数据
+name: "Generate Test Specification"
+description: "调用测试规格专家，根据上下文生成 场景测试 文档"
+
+# 核心配置：触发方式
+# 注意：不同的 BMAD 宿主环境（如 Obsidian, VSCode, CLI）对指令的支持略有不同
+# 但通常通过定义 trigger 或 command 来实现
+trigger:
+  type: "command"
+  pattern: "gen-spec"  # 这里定义指令关键词，用户输入 *gen-spec 或 /gen-spec 时触发
+
+# 定义执行步骤
+steps:
+  - id: "step_1"
+    name: "Analyze Context"
+    # 指定要使用的 Agent ID (必须与你在 agents/spec-expert.yaml 中定义的 id 一致)
+    agent: "spec-expert"
+
+    # 传递给 Agent 的具体指令
+    # 这里我们使用 {{input}} 占位符，代表用户在指令后跟随的文本（如果有）
+    # 或者直接让它读取当前上下文
+    prompt: >
+      请读取当前的上下文（包括选中的代码、日志或之前对话中的信息）。
+      根据这些信息，执行你的核心任务：生成 标准格式的测试规格说明书。
+      
+      用户额外输入（如果有）: {{input}}
+
+  - id: "step_2" # 可选：你可以加后续步骤，比如“把结果保存到文件”
+    name: "Save to File"
+    tool: "file-system" # 假设环境中安装了文件操作工具
+    action: "write"
+    params:
+      path: "./docs/specs/generated_spec.md"
+      content: "{{step_1.output}}"
