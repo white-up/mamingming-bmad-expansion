@@ -12,23 +12,43 @@ trigger:
 # 定义执行步骤
 steps:
   - id: "step_1"
-    name: "Analyze Context"
-    # 指定要使用的 Agent ID (必须与你在 agents/spec-expert.yaml 中定义的 id 一致)
+    name: "Check Spec Context"
     agent: "spec-expert"
-
-    # 传递给 Agent 的具体指令
-    # 这里我们使用 {{input}} 占位符，代表用户在指令后跟随的文本（如果有）
-    # 或者直接让它读取当前上下文
     prompt: >
-      请读取当前的上下文（包括选中的代码、日志或之前对话中的信息）。
-      根据这些信息，执行你的核心任务：生成 标准格式的测试规格说明书。
+      请读取当前的上下文（选中的代码或日志）。
       
-      用户额外输入（如果有）: {{input}}
+      你的任务是确认测试规格生成的范围。
+      
+      1. 如果上下文包含代码或日志：
+         请简要概括你识别到的业务逻辑，并询问："我准备为 [功能/模块] 生成测试规格书。请确认：您需要覆盖哪些特定的异常场景或边界条件？或者直接生成默认的全量覆盖？"
+         
+      2. 如果上下文不明确：
+         请回复："我已就绪。请选中相关代码或提供日志上下文。告诉我您希望生成针对哪个功能的测试规格书？"
+      
+      请勿在此步骤生成完整文档。
 
   - id: "step_2"
+    name: "Wait for User Input"
+    action: "wait_for_input"
+    prompt: "等待用户确认测试范围..."
+
+  - id: "step_3"
+    name: "Generate Test Spec"
+    # 指定要使用的 Agent ID (必须与你在 agents/spec-expert.yaml 中定义的 id 一致)
+    agent: "spec-expert"
+    
+    # 传递给 Agent 的具体指令
+    prompt: >
+      基于上下文信息和用户的最新输入：
+      {{step_2.input}}
+      
+      请执行你的核心任务：生成 标准格式的测试规格说明书。
+      确保覆盖用户特别提到的场景（如果有）。
+
+  - id: "step_4"
     name: "Save to File"
     tool: "file-system"
     action: "write"
     params:
       path: "./docs/specs/generated_spec.md"
-      content: "{{step_1.output}}"
+      content: "{{step_3.output}}"

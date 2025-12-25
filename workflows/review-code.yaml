@@ -10,19 +10,40 @@ trigger:
 # 定义执行步骤
 steps:
   - id: "step_1"
-    name: "Review Code Context"
+    name: "Check Review Context"
     agent: "code-guardian"
     prompt: >
       请读取当前的上下文（选中的 Java 代码）。
-      根据 Jlpay 开发规范，对代码进行严格审查并输出报告。
       
-      用户额外输入（如果有）: {{input}}
+      你的任务是确认代码审查的重点。
+      
+      1. 如果选中了代码：
+         请简要概括代码内容，并询问："我已准备好审查 [类名/模块]。请问本次审查有无特定重点？例如：架构分层合规性、潜在的 NPE 风险、事务处理，还是通用的规范检查？"
+         
+      2. 如果未选中代码：
+         请回复："我已就绪。请选中您想要审查的 Java 代码。告诉我您希望我重点检查哪些方面？"
+      
+      请勿在此步骤生成完整报告。
 
   - id: "step_2"
+    name: "Wait for User Input"
+    action: "wait_for_input"
+    prompt: "等待用户确认审查重点..."
+
+  - id: "step_3"
+    name: "Review Code Context"
+    agent: "code-guardian"
+    prompt: >
+      基于上下文信息和用户的最新输入：
+      {{step_2.input}}
+      
+      根据 Jlpay 开发规范，对代码进行严格审查并输出报告。
+      重点关注用户提到的方面（如果有）。
+
+  - id: "step_4"
     name: "Save Review Report"
     tool: "file-system"
     action: "write"
     params:
       path: "./docs/reviews/review_report.md"
-      content: "{{step_1.output}}"
-
+      content: "{{step_3.output}}"

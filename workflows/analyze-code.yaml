@@ -10,19 +10,41 @@ trigger:
 # 定义执行步骤
 steps:
   - id: "step_1"
-    name: "Analyze Code Context"
+    name: "Check Analysis Context"
     agent: "code-analyst"
     prompt: >
       请读取当前的上下文（选中的 Java 代码）。
-      根据这些代码，执行你的核心任务：深度逆向分析并生成报告。
       
-      用户额外输入（如果有）: {{input}}
+      你的任务是确认分析的目标和范围。
+      
+      1. 如果当前选中的代码很明确：
+         请简要概括你看到的类/方法，并询问："我已准备好分析 [类名/方法名]。您是否需要我重点关注具体的业务逻辑、数据流向，还是进行全面的全景扫描？"
+         
+      2. 如果没有选中代码或上下文不清晰：
+         请回复："我已就绪。请选中您想要分析的 Java 代码片段 (Controller/Service)，或粘贴相关代码。告诉我您希望了解这段代码的哪些方面？"
+      
+      请勿在此步骤生成完整报告。
 
   - id: "step_2"
+    name: "Wait for User Input"
+    action: "wait_for_input"
+    prompt: "等待用户确认分析范围..."
+
+  - id: "step_3"
+    name: "Analyze Code Context"
+    agent: "code-analyst"
+    prompt: >
+      基于上下文信息和用户的最新输入：
+      {{step_2.input}}
+      
+      请执行你的核心任务：深度逆向分析并生成报告。
+      
+      根据用户的关注点（如果有），重点分析相关部分。
+
+  - id: "step_4"
     name: "Save Analysis Report"
     tool: "file-system"
     action: "write"
     params:
       path: "./docs/analysis/analysis_report.md"
-      content: "{{step_1.output}}"
-
+      content: "{{step_3.output}}"

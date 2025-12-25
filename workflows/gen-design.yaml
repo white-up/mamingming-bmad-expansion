@@ -1,0 +1,52 @@
+# Workflow 元数据
+name: "Generate Design Document"
+description: "调用产研设计文档专家，生成结构化、无歧义、可直接落地的设计文档"
+
+# 核心配置：触发方式
+trigger:
+  type: "command"
+  pattern: "JL_gen-design"
+
+# 定义执行步骤
+steps:
+  - id: "step_1"
+    name: "Analyze Context & Check Requirements"
+    agent: "design-expert"
+    # 这一步仅做初步分析，不生成完整文档
+    prompt: >
+      请读取当前的上下文（包括选中的代码、文件或之前对话中的信息）。
+      
+      你的任务是判断是否有足够的输入信息来生成设计文档。
+      
+      1. 如果没有明确的业务需求描述：
+         请回复："我已就绪。请提供您想要设计的具体业务需求或功能描述，如果有相关的代码片段也请选中。"
+         
+      2. 如果有需求描述：
+         请简要总结你理解的需求，并询问："我已理解您关于 [需求摘要] 的请求。是否还有其他约束条件或上下文需要补充？如果没有，请回复 'Go' 或 '开始'。"
+         
+      请勿在此步骤生成完整文档。
+
+  - id: "step_2"
+    name: "Wait for User Input"
+    action: "wait_for_input"
+    prompt: "等待用户补充需求或确认..."
+
+  - id: "step_3"
+    name: "Generate Full Design Document"
+    agent: "design-expert"
+    prompt: >
+      基于上下文信息和用户的最新输入：
+      {{step_2.input}}
+      
+      请执行你的核心指令：生成一份完整的 **产研通用设计文档**。
+      严格遵循你的 System Instructions 中的 `# 强制准则` 和 `# 输出模板`。
+      
+      如果用户在上一轮输入中提供了新的需求信息，请务必将其纳入考虑。
+
+  - id: "step_4"
+    name: "Save Design Document"
+    tool: "file-system"
+    action: "write"
+    params:
+      path: "./docs/designs/{{timestamp}}_design_doc.md"
+      content: "{{step_3.output}}"
