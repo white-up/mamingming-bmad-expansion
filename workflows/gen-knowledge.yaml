@@ -1,0 +1,56 @@
+# Workflow 元数据
+name: "Generate Business Knowledge Entry"
+description: "调用业务支持知识架构师，将问题和解决方案转换为结构化知识库条目"
+
+# 核心配置：触发方式
+trigger:
+  type: "command"
+  pattern: "JL_gen-knowledge"  # 用户输入 JL_gen-knowledge 时触发
+
+# 定义执行步骤
+steps:
+  - id: "step_1"
+    name: "Prepare for Input"
+    # 使用一个简单的agent来输出准备消息
+    agent: "knowledge-expert"
+
+    # 传递给 Agent 的指令：先告诉用户准备好了
+    prompt: >
+      你现在准备好接收用户的问题描述和解决方案了。
+
+      请回复用户："我已经准备好了，请提供您的问题描述和解决方案，我将为您整理成标准的知识库QA条目格式。
+
+      格式要求：
+      - 问题：简要描述遇到的问题
+      - 解决流程：详细说明如何解决的步骤
+
+      请开始输入："
+
+  - id: "step_2"
+    name: "Wait for User Input"
+    # 这个步骤等待用户输入问题和解决方案
+    action: "wait_for_input"
+    prompt: "请提供问题描述和解决方案："
+
+  - id: "step_3"
+    name: "Process Knowledge Entry"
+    # 指定要使用的 Agent ID
+    agent: "knowledge-expert"
+
+    # 传递给 Agent 的具体指令
+    prompt: >
+      根据用户提供的输入，执行你的核心任务：生成标准格式的知识库条目。
+
+      用户输入内容：
+      {{step_2.input}}
+
+      请严格按照预定义的格式输出结构化的知识库条目。
+      确保标题包含业务模块关键词，解决方案步骤以动词开头，包含必要的注意事项。
+
+  - id: "step_4"
+    name: "Save Knowledge Entry"
+    tool: "file-system"
+    action: "write"
+    params:
+      path: "./docs/knowledge/{{timestamp}}_knowledge_entry.md"
+      content: "{{step_3.output}}"

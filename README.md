@@ -51,6 +51,21 @@ BMAD6 拓展模块
 - **使用方式**:
     选中待提交的 Java 代码，输入 `JL_review-code`，获取合规性审查报告。
 
+### 4. 业务支持知识库结构化专家 (Business Knowledge Architect)
+
+将一线支持人员的问题和解决流程转化为高质量的知识库条目。
+
+- **功能**: 将原始问题和琐碎解决流程转化为结构化知识库条目，包含：
+    - **精准标题生成**: 使用【业务模块】标注，包含动作、对象和同义词扩展。
+    - **标准QA格式**: 包含问题背景、解决方案步骤和注意事项。
+    - **语义搜索优化**: 标题设计确保在语义搜索系统中高匹配度。
+- **调用指令**: `JL_gen-knowledge`
+- **相关文件**:
+    - Agent 定义: `agents/knowledge-expert.yaml` (ID: `knowledge-expert`)
+    - Workflow 定义: `workflows/gen-knowledge.yaml`
+- **使用方式**:
+    输入 `JL_gen-knowledge`，系统将提示准备就绪，然后您提供问题描述和解决方案，系统会自动生成标准化的知识库条目。
+
 ## 项目结构
 
 - `agents/`: 存放智能体 (Agent) 的定义文件。
