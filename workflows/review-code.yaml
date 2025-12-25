@@ -1,0 +1,20 @@
+# Workflow 元数据
+name: "Review Java Code"
+description: "调用 Java 代码守卫，基于 Jlpay 规范进行严格的代码审查"
+
+# 核心配置：触发方式
+trigger:
+  type: "command"
+  pattern: "JL_review-code"
+
+# 定义执行步骤
+steps:
+  - id: "step_1"
+    name: "Review Code Context"
+    agent: "code-guardian"
+    prompt: >
+      请读取当前的上下文（选中的 Java 代码）。
+      根据 Jlpay 开发规范，对代码进行严格审查并输出报告。
+      
+      用户额外输入（如果有）: {{input}}
+

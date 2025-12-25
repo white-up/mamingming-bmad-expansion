@@ -1,0 +1,20 @@
+# Workflow 元数据
+name: "Analyze Java Code"
+description: "调用代码分析专家，深度逆向分析 Java 代码"
+
+# 核心配置：触发方式
+trigger:
+  type: "command"
+  pattern: "JL_analyze-code"
+
+# 定义执行步骤
+steps:
+  - id: "step_1"
+    name: "Analyze Code Context"
+    agent: "code-analyst"
+    prompt: >
+      请读取当前的上下文（选中的 Java 代码）。
+      根据这些代码，执行你的核心任务：深度逆向分析并生成报告。
+      
+      用户额外输入（如果有）: {{input}}
+
