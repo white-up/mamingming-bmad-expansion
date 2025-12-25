@@ -18,3 +18,11 @@ steps:
       
       用户额外输入（如果有）: {{input}}
 
+  - id: "step_2"
+    name: "Save Review Report"
+    tool: "file-system"
+    action: "write"
+    params:
+      path: "./docs/reviews/review_report.md"
+      content: "{{step_1.output}}"
+

@@ -25,9 +25,9 @@ steps:
       
       用户额外输入（如果有）: {{input}}
 
-  - id: "step_2" # 可选：你可以加后续步骤，比如“把结果保存到文件”
+  - id: "step_2"
     name: "Save to File"
-    tool: "file-system" # 假设环境中安装了文件操作工具
+    tool: "file-system"
     action: "write"
     params:
       path: "./docs/specs/generated_spec.md"
