@@ -1,0 +1,55 @@
+# Workflow 元数据
+name: "DDD Architecture Review"
+description: "调用 DDD 专家，审查代码架构并提供领域建模重构建议"
+
+# 核心配置：触发方式
+trigger:
+  type: "command"
+  pattern: "JL_review-ddd"
+
+# 定义执行步骤
+steps:
+  - id: "step_1"
+    name: "Check DDD Review Context"
+    agent: "ddd-expert"
+    prompt: >
+      请读取当前的上下文（选中的代码、数据库 Schema 或业务描述）。
+      
+      你的任务是确认 DDD 审查的目标。
+      
+      1. 如果选中了代码或提供了明确上下文：
+         请简要概括你识别到的领域模型，并询问："我已准备好对 [模块/领域] 进行 DDD 审查。请问您更关注：
+         - 聚合边界与一致性设计？
+         - 贫血模型的识别与逻辑回充？
+         - 还是整体的界限上下文划分？"
+         
+      2. 如果没有明确上下文：
+         请回复："我已就绪。请选中您想要审查的 Java 代码或提供业务描述。告诉我您希望我从哪个 DDD 维度进行分析？"
+      
+      请勿在此步骤生成完整报告。
+
+  - id: "step_2"
+    name: "Wait for User Input"
+    action: "wait_for_input"
+    prompt: "等待用户确认审查重点..."
+
+  - id: "step_3"
+    name: "Perform DDD Analysis"
+    agent: "ddd-expert"
+    prompt: >
+      基于上下文信息和用户的最新输入：
+      {{step_2.input}}
+      
+      请执行你的核心任务：基于 DDD 原则对模块进行深度建模分析。
+      严格遵循你的 System Instructions 中的 `# Knowledge Base` 和 `# Output Template`。
+      
+      重点关注用户提到的方面（如果有）。
+
+  - id: "step_4"
+    name: "Save DDD Report"
+    tool: "file-system"
+    action: "write"
+    params:
+      path: "./docs/reviews/{{timestamp}}_ddd_review.md"
+      content: "{{step_3.output}}"
+

@@ -20,6 +20,7 @@ BMAD6 拓展模块
 | **代码守卫** | `JL_review-code` | 基于技术规范进行代码合规性审查，提供重构建议 | 代码提交前审查，确保规范合规 |
 | **业务支持知识库结构化专家** | `JL_gen-knowledge` | 将问题和解决方案转换为标准化的知识库条目 | 客服支持，构建可搜索的知识库 |
 | **产研设计文档智能专家** | `JL_gen-design` | 生成结构化、无歧义、可落地的产研通用设计文档 | 需求分析、技术方案设计阶段 |
+| **DDD 领域建模专家** | `JL_review-ddd` | 基于 DDD 原则审查架构设计，识别贫血模型并提供重构方案 | 架构设计审查、遗留系统重构 |
 
 ### 1. 测试规格生成器 (Test Spec Generator)
 
@@ -98,6 +99,22 @@ BMAD6 拓展模块
 - **使用方式**:
     选中相关代码或提供需求描述，输入 `JL_gen-design`。系统会首先评估信息完整性，必要时请求补充，随后生成完整文档。
 
+### 6. DDD 领域建模专家 (DDD Modeling Expert)
+
+资深领域建模专家，基于 DDD 原则对代码或架构进行深度体检与重构。
+
+- **功能**: 识别设计缺陷并提供领域驱动的重构方案，包含：
+    - **战术体检**: 检测贫血模型、大聚合、原始类型偏执等问题。
+    - **异味评分**: 对封装性、聚合边界、领域逻辑浓度进行打分诊断。
+    - **重构方案**: 提供 Before/After 代码对比，演示如何将逻辑充血回实体。
+    - **模型可视化**: 自动生成优化后的 Mermaid 领域模型类图。
+- **调用指令**: `JL_review-ddd`
+- **相关文件**:
+    - Agent 定义: `agents/ddd-expert.yaml` (ID: `ddd-expert`)
+    - Workflow 定义: `workflows/review-ddd.yaml`
+- **使用方式**:
+    选中相关代码、数据库 Schema 或业务描述，输入 `JL_review-ddd`。系统会确认您关注的维度（聚合设计/贫血模型/限界上下文），随后输出深度诊断报告。
+
 ## 项目结构
 
 ```
@@ -107,17 +124,20 @@ mamingming-bmad-expansion/
 │   ├── code-analyst.yaml   # 代码逆向分析师
 │   ├── code-guardian.yaml  # 代码守卫
 │   ├── knowledge-expert.yaml # 业务知识架构师
-│   └── design-expert.yaml  # 产研设计专家
+│   ├── design-expert.yaml  # 产研设计专家
+│   └── ddd-expert.yaml     # DDD 建模专家
 ├── workflows/              # 工作流 (Workflow) 定义文件
 │   ├── gen-spec.yaml       # 测试规格生成工作流
 │   ├── analyze-code.yaml   # 代码分析工作流
 │   ├── review-code.yaml    # 代码审查工作流
 │   ├── gen-knowledge.yaml  # 知识库生成工作流
-│   └── gen-design.yaml     # 设计文档生成工作流
+│   ├── gen-design.yaml     # 设计文档生成工作流
+│   └── review-ddd.yaml     # DDD 审查工作流
 ├── docs/                   # 生成的文档输出目录
 │   ├── specs/             # 测试规格文档
 │   ├── knowledge/         # 知识库条目
-│   └── designs/           # 产研设计文档
+│   ├── designs/           # 产研设计文档
+│   └── reviews/           # 代码审查与DDD报告
 ├── module.yaml            # 模块元数据定义
 └── README.md              # 项目说明文档
 ```
@@ -148,3 +168,5 @@ mamingming-bmad-expansion/
 - **v1.2.0**: 全面升级交互式工作流
   - 所有工作流增加"需求澄清"步骤
   - 优化指令执行体验，确保任务目标明确
+- **v1.3.0**: 新增 DDD 架构审查模块
+  - DDD 领域建模专家
