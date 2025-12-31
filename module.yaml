@@ -1,7 +1,7 @@
-name: "Distributed System Test Specs"
+name: "JL R&D Expansion Module"
 code :  "mamingming-bmad-expansion"
-description: "BMAD研发拓展模块"
-version: "1.0.0"
+description: "BMAD6研发拓展模块 - 双专家架构的分布式系统研发与质量保障工具集"
+version: "2.0.0"
 type: "standalone"
 unitary: true
 author: "maxiangming"

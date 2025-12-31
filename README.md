@@ -1,172 +1,209 @@
 # mamingming-bmad-expansion
-BMAD6 拓展模块
+BMAD6 拓展模块 - 分布式系统研发与质量保障工具集
 
-这个项目是为 BMAD6 开发的一个拓展模块，旨在集成常用的提示词和工作流程，提升开发和测试效率。
+这个项目是为 BMAD6 开发的一个拓展模块，通过集成两个核心 AI 专家（ARCH & QA），提供从需求分析到代码审查的全流程智能化解决方案。
+
+## 核心能力
+
+### 🎯 双专家架构
+- **JL-ARCH (架构专家)**: 专注于系统架构设计、DDD 领域建模与逆向工程分析
+- **JL-QA (质量专家)**: 专注于代码审查、测试生成与质量保障
+
+### 🔄 全流程覆盖
+- **设计阶段**: DDD 领域建模、产研设计文档生成
+- **构建阶段**: 代码分析、测试规格生成、代码审查
+- **发布阶段**: 知识库条目生成、功能分析报告
 
 ## 快速开始
 
 1. **安装模块**: 将此模块加载到您的 BMAD6 环境中
-2. **选择功能**: 根据您的需求选择对应的快捷指令
+2. **选择场景**: 根据您的研发阶段选择对应的快捷指令
 3. **执行操作**: 在代码编辑器中选中相关内容，输入对应指令即可
 
 ## 功能模块 (Modules)
 
 ### 快捷指令汇总
 
-| 模块名称 | 快捷指令 | 功能说明 | 适用场景 |
-|---------|---------|---------|---------|
-| **测试规格生成器** | `JL_gen-spec` | 生成包含测试场景、逻辑图解、可执行脚本的全栈测试规格说明书 | 开发/测试阶段，基于代码生成测试文档 |
-| **代码逆向分析师** | `JL_analyze-code` | 对遗留代码进行深度剖析，挖掘业务规则并可视化数据流 | 代码审查、重构，理解复杂业务逻辑 |
-| **代码守卫** | `JL_review-code` | 基于技术规范进行代码合规性审查，提供重构建议 | 代码提交前审查，确保规范合规 |
-| **业务支持知识库结构化专家** | `JL_gen-knowledge` | 将问题和解决方案转换为标准化的知识库条目 | 客服支持，构建可搜索的知识库 |
-| **产研设计文档智能专家** | `JL_gen-design` | 生成结构化、无歧义、可落地的产研通用设计文档 | 需求分析、技术方案设计阶段 |
-| **DDD 领域建模专家** | `JL_review-ddd` | 基于 DDD 原则审查架构设计，识别贫血模型并提供重构方案 | 架构设计审查、遗留系统重构 |
+| 模块名称 | 快捷指令 | 功能说明 | 适用场景 | 执行Agent |
+|---------|---------|---------|---------|---------|
+| **DDD系统设计** | `JL-Design-DDD` | 基于需求文档，进行DDD领域建模并输出详细设计文档 | 需求分析、技术方案设计阶段 | JL-ARCH |
+| **功能分析报告** | `JL-Ship-AnalyzeCode` | 对Java代码进行深度逆向分析，挖掘业务规则并可视化 | 代码理解、重构规划、文档编写 | JL-ARCH |
+| **知识库条目生成** | `JL-Ship-GenKnowledge` | 将问题和解决方案转换为标准化的知识库条目 | 客服支持，构建可搜索的知识库 | JL-ARCH |
+| **场景测试用例生成** | `JL-Build-Scenario-Test-Case` | 基于代码和日志生成完整的场景测试报告 | 测试设计、质量保障阶段 | JL-QA |
+| **代码审查** | `JL-Build-ReviewCode` | 基于技术规范进行深度代码合规性审查 | 代码提交前审查、质量把控 | JL-QA |
 
-### 1. 测试规格生成器 (Test Spec Generator)
+### 1. DDD系统设计 (DDD System Design)
 
-基于代码或日志上下文，自动生成包含测试场景、逻辑图解及可执行脚本的全栈测试规格说明书。
+基于需求文档，进行DDD领域建模并输出详细设计文档。
 
-- **功能**: 输出结构化的测试文档，包含：
-    - **测试场景 (Test Scenarios)**: 覆盖 Happy Path 和异常/边界情况。
-    - **逻辑可视化 (Logic Visualization)**: 使用 Mermaid 流程图展示数据流转。
-    - **可执行脚本 (Execution Scripts)**: 提供 cURL、SQL 数据准备/校验、Python 自动化验证脚本。
-- **调用指令**: `JL_gen-spec`
+- **功能**: 完整的DDD设计流程，包含：
+    - **产研需求设计**: 结构化、无歧义、可直接落地的产研通用设计文档
+    - **事件风暴建模**: 与用户多轮对话绘制事件风暴图，确保领域模型准确性
+    - **DDD建模报告**: 严格遵循DDD规范的完整建模报告
+- **调用指令**: `JL-Design-DDD`
 - **相关文件**:
-    - Agent 定义: `agents/spec-expert.yaml` (ID: `spec-expert`)
-    - Workflow 定义: `workflows/gen-spec.yaml`
+    - Agent: `agents/JL-ARCH.agent.yaml`
+    - Workflow: `workflows/arch/JL-Workflow-Design-DDD.yaml`
+    - Templates: `templates/arch/JL-Template-Requirements-Design.md`, `templates/arch/JL-Template-DDD-Design.md`
 - **使用方式**:
-    在 BMAD 环境中，选中代码片段或提供日志上下文，输入指令 `JL_gen-spec`。系统会确认测试覆盖范围（正常流程/异常场景/边界条件），确认后生成对应的测试规格书。
+    选中需求文档或相关代码，输入 `JL-Design-DDD`。系统会分阶段确认需求边界、生成设计文档、进行事件风暴建模，最终输出完整的DDD建模报告。
 
-### 2. 代码逆向分析师 (Code Reverse Analyst)
+### 2. 功能分析报告 (Function Analysis Report)
 
-像 Java 资深架构师一样，对遗留代码进行深度剖析，挖掘业务规则并可视化数据流。
+对Java代码进行深度逆向分析，挖掘业务规则并可视化数据流。
 
-- **功能**: 输出深度代码分析报告，包含：
-    - **全景扫描**: 识别输入输出及非功能性注解 (@Transactional 等)。
-    - **依赖探测**: 自动识别数据库交互、外部服务 (Feign/Dubbo) 和中间件 (Redis/MQ)。
-    - **逻辑与规则**: 像调试器一样推演逻辑，并提取自然语言的业务规则。
-    - **可视化**: 自动生成 Mermaid 流程图和推断的 ER 图。
-- **调用指令**: `JL_analyze-code`
+- **功能**: 资深架构师级别的代码分析，包含：
+    - **全景业务扫描**: 识别业务逻辑、数据流向、依赖关系
+    - **规则提取**: 将代码逻辑转换为自然语言的业务规则
+    - **可视化图表**: 自动生成Mermaid流程图和时序图
+- **调用指令**: `JL-Ship-AnalyzeCode`
 - **相关文件**:
-    - Agent 定义: `agents/code-analyst.yaml` (ID: `code-analyst`)
-    - Workflow 定义: `workflows/analyze-code.yaml`
+    - Agent: `agents/JL-ARCH.agent.yaml`
+    - Workflow: `workflows/arch/JL-Workflow-Ship-AnalyzeCode.yaml`
+    - Template: `templates/arch/JL-Template-Analyze-Code.md`
 - **使用方式**:
-    选中一段 Java 代码 (Controller/Service)，输入 `JL_analyze-code`。系统会询问重点关注方向（业务逻辑/数据流/全景扫描），确认后生成深度分析报告。
+    选中Java代码片段，输入 `JL-Ship-AnalyzeCode`。系统会确认分析重点（业务逻辑/数据流/全景扫描），结合相关文档进行深度分析，生成结构化报告。
 
-### 3. 代码守卫 (Code Guardian)
+### 3. 知识库条目生成 (Knowledge Base Entry Generation)
 
-严格的 Java 代码审查专家，基于 Jlpay 技术规范进行合规性审查。
+将问题和解决方案转换为标准化的知识库条目。
 
-- **功能**: 自动审查代码规范、架构分层、技术栈合规性及潜在风险。
-    - **规范验收**: 强制执行 COLA 分层、MapStruct 转换、MyBatis-Plus 使用等规则。
-    - **异味扫描**: 识别大类/长方法、参数过多、空指针风险、事务失效等问题。
-    - **重构建议**: 提供 Before/After 代码对比，指导优化。
-- **调用指令**: `JL_review-code`
+- **功能**: 结构化知识库建设，包含：
+    - **智能标题生成**: 使用业务模块标注，包含动作、对象和同义词扩展
+    - **标准QA格式**: 包含问题背景、解决方案步骤和注意事项
+    - **语义搜索优化**: 标题设计确保在语义搜索系统中高匹配度
+- **调用指令**: `JL-Ship-GenKnowledge`
 - **相关文件**:
-    - Agent 定义: `agents/code-guardian.yaml` (ID: `code-guardian`)
-    - Workflow 定义: `workflows/review-code.yaml`
+    - Agent: `agents/JL-ARCH.agent.yaml`
+    - Workflow: `workflows/arch/JL-Workflow-Ship-GenKnowledge.yaml`
+    - Template: `templates/arch/JL-Template-Knowledge-Entry.md`
 - **使用方式**:
-    选中待提交的 Java 代码，输入 `JL_review-code`。系统会确认审查重点（架构合规/安全风险/通用规范），确认后生成合规性审查报告。
+    输入 `JL-Ship-GenKnowledge`，系统会提示准备就绪，然后您提供问题描述和解决方案，系统自动生成标准化的知识库条目。
 
-### 4. 业务支持知识库结构化专家 (Business Knowledge Architect)
+### 4. 场景测试用例生成 (Scenario Test Case Generation)
 
-将一线支持人员的问题和解决流程转化为高质量的知识库条目。
+基于代码和日志生成完整的场景测试报告。
 
-- **功能**: 将原始问题和琐碎解决流程转化为结构化知识库条目，包含：
-    - **精准标题生成**: 使用【业务模块】标注，包含动作、对象和同义词扩展。
-    - **标准QA格式**: 包含问题背景、解决方案步骤和注意事项。
-    - **语义搜索优化**: 标题设计确保在语义搜索系统中高匹配度。
-- **调用指令**: `JL_gen-knowledge`
+- **功能**: 全栈测试规格生成，包含：
+    - **拓扑还原**: 识别服务组件、数据库表、外部API交互
+    - **业务逻辑对齐**: 对比业务描述与日志，找出状态机变更
+    - **测试场景覆盖**: Happy Path、边界值、异常场景、安全测试
+    - **可执行脚本**: 提供cURL、SQL、Python自动化验证脚本
+- **调用指令**: `JL-Build-Scenario-Test-Case`
 - **相关文件**:
-    - Agent 定义: `agents/knowledge-expert.yaml` (ID: `knowledge-expert`)
-    - Workflow 定义: `workflows/gen-knowledge.yaml`
+    - Agent: `agents/JL-QA.agent.yaml`
+    - Workflow: `workflows/quality/JL-Workflow-Build-GenTestSpec.yaml`
+    - Template: `templates/quality/JL-Template-Scenario-Test-Case.md`
 - **使用方式**:
-    输入 `JL_gen-knowledge`，系统将提示准备就绪，然后您提供问题描述和解决方案，系统会自动生成标准化的知识库条目。
+    选中代码片段或提供日志上下文，输入 `JL-Build-Scenario-Test-Case`。系统会确认测试覆盖范围，基于代码逆向工程生成完整的测试规格书。
 
-### 5. 产研设计文档智能专家 (Product-Research Design Expert)
+### 5. 代码审查 (Code Review)
 
-具备顶尖产品架构和资深研发经验的智能专家，输出结构化、无歧义、可直接落地的产研通用设计文档。
+基于技术规范进行深度代码合规性审查。
 
-- **功能**: 生成标准化的产研设计文档，连接产品与研发：
-    - **双视角覆盖**: 既包含产品关注的业务边界、验收标准，也包含研发关注的技术约束、数据模型。
-    - **交互式澄清**: 自动识别模糊需求，引导用户补全关键信息。
-    - **标准化输出**: 包含业务流程图、时序图、C4架构图和数据字典。
-    - **代码一致性**: 分析现有代码对需求的覆盖情况及扩展性建议。
-- **调用指令**: `JL_gen-design`
+- **功能**: 严格的质量把控，包含：
+    - **规范检查**: 基于Java编码规范和架构设计规范进行审查
+    - **异味识别**: 识别代码异味、安全风险、性能问题
+    - **重构建议**: 提供具体的改进方案和Before/After对比
+- **调用指令**: `JL-Build-ReviewCode`
 - **相关文件**:
-    - Agent 定义: `agents/design-expert.yaml` (ID: `design-expert`)
-    - Workflow 定义: `workflows/gen-design.yaml`
+    - Agent: `agents/JL-QA.agent.yaml`
+    - Workflow: `workflows/quality/JL-Workflow-Build-ReviewCode.yaml`
+    - Template: `templates/quality/JL-Template-CR.md`
 - **使用方式**:
-    选中相关代码或提供需求描述，输入 `JL_gen-design`。系统会首先评估信息完整性，必要时请求补充，随后生成完整文档。
-
-### 6. DDD 领域建模专家 (DDD Modeling Expert)
-
-资深领域建模专家，基于 DDD 原则对代码或架构进行深度体检与重构。
-
-- **功能**: 识别设计缺陷并提供领域驱动的重构方案，包含：
-    - **战术体检**: 检测贫血模型、大聚合、原始类型偏执等问题。
-    - **异味评分**: 对封装性、聚合边界、领域逻辑浓度进行打分诊断。
-    - **重构方案**: 提供 Before/After 代码对比，演示如何将逻辑充血回实体。
-    - **模型可视化**: 自动生成优化后的 Mermaid 领域模型类图。
-- **调用指令**: `JL_review-ddd`
-- **相关文件**:
-    - Agent 定义: `agents/ddd-expert.yaml` (ID: `ddd-expert`)
-    - Workflow 定义: `workflows/review-ddd.yaml`
-- **使用方式**:
-    选中相关代码、数据库 Schema 或业务描述，输入 `JL_review-ddd`。系统会确认您关注的维度（聚合设计/贫血模型/限界上下文），随后输出深度诊断报告。
+    选中待审查的Java代码，输入 `JL-Build-ReviewCode`。系统会确认审查范围，基于规范进行深度审查，生成详细的审查报告。
 
 ## 项目结构
 
 ```
 mamingming-bmad-expansion/
-├── agents/                 # 智能体 (Agent) 定义文件
-│   ├── spec-expert.yaml    # 测试规格专家
-│   ├── code-analyst.yaml   # 代码逆向分析师
-│   ├── code-guardian.yaml  # 代码守卫
-│   ├── knowledge-expert.yaml # 业务知识架构师
-│   ├── design-expert.yaml  # 产研设计专家
-│   └── ddd-expert.yaml     # DDD 建模专家
-├── workflows/              # 工作流 (Workflow) 定义文件
-│   ├── gen-spec.yaml       # 测试规格生成工作流
-│   ├── analyze-code.yaml   # 代码分析工作流
-│   ├── review-code.yaml    # 代码审查工作流
-│   ├── gen-knowledge.yaml  # 知识库生成工作流
-│   ├── gen-design.yaml     # 设计文档生成工作流
-│   └── review-ddd.yaml     # DDD 审查工作流
-├── docs/                   # 生成的文档输出目录
-│   ├── specs/             # 测试规格文档
-│   ├── knowledge/         # 知识库条目
-│   ├── designs/           # 产研设计文档
-│   └── reviews/           # 代码审查与DDD报告
-├── module.yaml            # 模块元数据定义
-└── README.md              # 项目说明文档
+├── agents/                         # AI专家定义
+│   ├── JL-ARCH.agent.yaml         # 架构专家 (JL-AG-ARCH)
+│   ├── JL-QA.agent.yaml           # 质量专家 (JL-AG-QA)
+│   └── sidecars/                  # 专家知识库
+│       ├── arch/                  # 架构相关规范文档
+│       │   ├── DDD与可视化规范.md
+│       │   └── 架构设计规范.md
+│       └── Java编码规范.md        # Java编码规范
+├── templates/                      # 输出模板 (按领域分类)
+│   ├── arch/                      # 架构领域模板
+│   │   ├── JL-Template-Analyze-Code.md      # 代码分析报告模板
+│   │   ├── JL-Template-DDD-Design.md        # DDD建模报告模板
+│   │   ├── JL-Template-Knowledge-Entry.md   # 知识库条目模板
+│   │   └── JL-Template-Requirements-Design.md # 需求设计文档模板
+│   └── quality/                   # 质量领域模板
+│       ├── JL-Template-CR.md                 # 代码审查报告模板
+│       └── JL-Template-Scenario-Test-Case.md # 场景测试用例模板
+├── workflows/                      # 工作流定义 (按领域分类)
+│   ├── arch/                      # 架构领域工作流
+│   │   ├── JL-Workflow-Design-DDD.yaml         # DDD系统设计
+│   │   ├── JL-Workflow-Ship-AnalyzeCode.yaml   # 功能分析报告
+│   │   └── JL-Workflow-Ship-GenKnowledge.yaml  # 知识库条目生成
+│   └── quality/                   # 质量领域工作流
+│       ├── JL-Workflow-Build-GenTestSpec.yaml  # 场景测试用例生成
+│       └── JL-Workflow-Build-ReviewCode.yaml   # 代码审查
+├── docs/                          # 生成文档输出目录
+│   ├── designs/                   # 设计文档
+│   ├── knowledge/                 # 知识库条目
+│   └── specs/                     # 测试规格文档
+├── module.yaml                    # 模块元数据定义
+└── README.md                      # 项目说明文档
 ```
 
 ### 文件说明
 
-- **`agents/`**: 存放各功能模块的核心AI智能体配置，定义了AI的角色、目标和行为准则
-- **`workflows/`**: 定义完整的工作流程，包括触发条件、执行步骤和输出处理
-- **`docs/`**: 存放各模块生成的结果文档，支持版本管理和历史追溯
-- **`module.yaml`**: BMAD6模块的元数据配置，包含模块信息和依赖声明
+- **`agents/`**: 两个核心AI专家配置
+  - `JL-ARCH.agent.yaml`: 架构专家，负责设计、分析、建模等架构相关任务
+  - `JL-QA.agent.yaml`: 质量专家，负责测试、审查、质量保障等任务
+  - `sidecars/`: 专家的外部知识库，包含各种规范文档
+
+- **`templates/`**: 结构化的输出模板，按领域分类
+  - `arch/`: 架构领域模板（设计文档、分析报告、建模报告等）
+  - `quality/`: 质量领域模板（测试用例、审查报告等）
+
+- **`workflows/`**: 工作流编排，按领域分类
+  - `arch/`: 架构领域工作流（设计、分析、建模等）
+  - `quality/`: 质量领域工作流（测试、审查等）
+
+- **`docs/`**: 自动生成的文档输出目录，包含所有产出物
+
+- **`module.yaml`**: BMAD6模块的元数据配置
+
+## 技术特性
+
+### 🤖 双专家架构
+- **JL-ARCH**: 崇尚DDD的系统架构师，擅长可视化建模与逆向工程
+- **JL-QA**: 严谨的质量保障工程师，基于"Trust, but Verify"原则
+
+### 📋 标准化输出
+- **模板化**: 所有输出严格遵循预定义模板，确保一致性
+- **可视化**: 自动生成Mermaid图表，提升文档可读性
+- **结构化**: 清晰的文档层次，便于团队协作
+
+### 🔄 交互式工作流
+- **需求澄清**: 每个工作流第一步都进行上下文评估和需求确认
+- **多轮对话**: 复杂任务支持与用户的多轮交互（如事件风暴建模）
+- **上下文感知**: 自动关联相关文档，提高分析准确性
 
 ## 注意事项
 
-- **环境要求**: 需要 BMAD6 运行环境支持
-- **文件权限**: 确保对 `docs/` 目录有写入权限，用于保存生成的结果
-- **AI模型**: 各功能模块对AI模型能力有一定要求，建议使用 GPT-4 或同等能力模型
-- **自定义配置**: 可根据团队需求修改 `agents/` 和 `workflows/` 中的配置参数
+- **环境要求**: 需要 BMAD6 运行环境支持，支持sidecar外部知识库功能
+- **文件权限**: 确保对输出目录有写入权限
+- **AI模型**: 建议使用 GPT-4 或同等能力模型，特别是对于复杂的设计和分析任务
+- **知识库**: sidecars目录下的规范文档可根据团队实际情况调整
+- **自定义配置**: 可修改agents、workflows、templates以适应团队特定需求
 
 ## 更新日志
 
-- **v1.0.0**: 初始版本发布，包含4个核心功能模块
-  - 测试规格生成器
-  - 代码逆向分析师
-  - 代码守卫
-  - 业务支持知识库结构化专家
-- **v1.1.0**: 新增产研设计文档生成模块
-  - 产研设计文档智能专家
-- **v1.2.0**: 全面升级交互式工作流
-  - 所有工作流增加"需求澄清"步骤
-  - 优化指令执行体验，确保任务目标明确
+- **v2.0.0**: 全新架构重构，采用双专家模式
+  - 重构为JL-ARCH（架构专家）和JL-QA（质量专家）双核心架构
+  - 重新组织目录结构，按领域分类（arch/quality）
+  - 标准化模板和输出格式
+  - 增强交互式工作流，支持多轮对话和上下文关联
+
 - **v1.3.0**: 新增 DDD 架构审查模块
   - DDD 领域建模专家
+- **v1.2.0**: 全面升级交互式工作流
+  - 所有工作流增加"需求澄清"步骤
+- **v1.1.0**: 新增产研设计文档生成模块
+- **v1.0.0**: 初始版本发布
