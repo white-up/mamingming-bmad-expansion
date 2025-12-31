@@ -1,0 +1,56 @@
+# 安全性检查子工作流配置
+name: "JL-Build-ReviewCode-SecurityReview"
+description: "安全性检查子工作流，检查 OWASP Top 10、输入验证、敏感数据处理、会话管理"
+author: "JL"
+
+# 这是由 JL-Build-ReviewCode/workflow.yaml 调用的子工作流
+parent_workflow: "{project-root}/_bmad/bmm/workflows/JL-Build-ReviewCode/workflow.yaml"
+
+# 从父工作流继承的关键变量
+config_source: "{project-root}/_bmad/bmm/config.yaml"
+output_folder: "{config_source}:output_folder"
+user_name: "{config_source}:user_name"
+communication_language: "{config_source}:communication_language"
+date: system-generated
+
+# 模块路径和组件文件
+installed_path: "{project-root}/_bmad/bmm/workflows/JL-Build-ReviewCode/workflows"
+template: false
+instructions: "{installed_path}/security-review-instructions.md"
+validation: "{project-root}/_bmad/bmm/workflows/JL-Build-ReviewCode/checklist.md"
+
+# 运行时输入
+inputs:
+  code_context: ""
+  previous_results: ""
+  output_dir: ""
+  resume_mode: false
+
+# 输出
+outputs:
+  security_score: "安全性得分"
+  security_findings: "发现的安全问题列表"
+
+# 配置
+autonomous: false
+
+# 安全检查项
+security_checks:
+  - id: "owasp_top10"
+    name: "OWASP Top 10"
+    weight: 40
+    items:
+      - "SQL 注入"
+      - "XSS 跨站脚本"
+      - "CSRF"
+      - "不安全的反序列化"
+      - "敏感数据泄露"
+  - id: "input_validation"
+    name: "输入验证"
+    weight: 25
+  - id: "sensitive_data"
+    name: "敏感数据处理"
+    weight: 20
+  - id: "session_management"
+    name: "会话管理"
+    weight: 15

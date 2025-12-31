@@ -1,0 +1,36 @@
+# 产研统一设计子工作流配置
+name: "JL-Design-DDD-Requirements"
+description: "产研统一设计文档生成子工作流"
+author: "JL"
+
+# 这是由 JL-Design-DDD/workflow.yaml 调用的子工作流
+parent_workflow: "{project-root}/_bmad/bmm/workflows/JL-Design-DDD/workflow.yaml"
+
+# 从父工作流继承的关键变量
+config_source: "{project-root}/_bmad/bmm/config.yaml"
+output_folder: "{config_source}:output_folder"
+user_name: "{config_source}:user_name"
+communication_language: "{config_source}:communication_language"
+date: system-generated
+
+# 模块路径和组件文件
+installed_path: "{project-root}/_bmad/bmm/workflows/JL-Design-DDD/workflows"
+template: false # 动作工作流
+instructions: "{installed_path}/requirements-design-instructions.md"
+validation: "{project-root}/_bmad/bmm/workflows/JL-Design-DDD/checklist.md"
+
+# 模板文件
+requirements_template: "{project-root}/_bmad/bmm/templates/JL-Template-Requirements-Design.md"
+
+# 运行时输入（从父工作流传递）
+inputs:
+  req_path: ""
+  output_dir: ""
+  resume_mode: false
+
+# 输出
+outputs:
+  requirements_doc: "{output_dir}/Requirements_Design_{timestamp}.md"
+
+# 配置
+autonomous: false # 需要用户在关键决策点输入

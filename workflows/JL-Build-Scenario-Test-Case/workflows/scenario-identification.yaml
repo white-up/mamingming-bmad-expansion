@@ -1,0 +1,67 @@
+# 场景识别子工作流配置
+name: "JL-Build-Scenario-Test-Case-ScenarioIdentification"
+description: "测试场景识别子工作流，识别正常流程、异常流程、边界测试等场景"
+author: "JL"
+
+# 这是由 JL-Build-Scenario-Test-Case/workflow.yaml 调用的子工作流
+parent_workflow: "{project-root}/_bmad/bmm/workflows/JL-Build-Scenario-Test-Case/workflow.yaml"
+
+# 从父工作流继承的关键变量
+config_source: "{project-root}/_bmad/bmm/config.yaml"
+output_folder: "{config_source}:output_folder"
+user_name: "{config_source}:user_name"
+communication_language: "{config_source}:communication_language"
+date: system-generated
+
+# 模块路径和组件文件
+installed_path: "{project-root}/_bmad/bmm/workflows/JL-Build-Scenario-Test-Case/workflows"
+template: false # 动作工作流
+instructions: "{installed_path}/scenario-identification-instructions.md"
+validation: "{project-root}/_bmad/bmm/workflows/JL-Build-Scenario-Test-Case/checklist.md"
+
+# 运行时输入（从父工作流传递）
+inputs:
+  context_analysis_results: ""
+  output_dir: ""
+  resume_mode: false
+
+# 输出
+outputs:
+  scenarios_list: "完整的测试场景列表"
+  scenario_statistics: "场景统计信息"
+
+# 配置
+autonomous: false # 需要用户在关键决策点输入
+
+# 场景类型定义
+scenario_types:
+  - id: "happy_path"
+    name: "正常流程"
+    prefix: "TC-HP"
+    priority: "P0"
+    description: "业务正常执行路径"
+  - id: "business_exception"
+    name: "业务异常"
+    prefix: "TC-BE"
+    priority: "P1"
+    description: "业务规则校验失败等"
+  - id: "system_exception"
+    name: "系统异常"
+    prefix: "TC-SE"
+    priority: "P1"
+    description: "系统级错误处理"
+  - id: "boundary"
+    name: "边界测试"
+    prefix: "TC-BD"
+    priority: "P1"
+    description: "边界值和特殊情况"
+  - id: "concurrency"
+    name: "并发测试"
+    prefix: "TC-CC"
+    priority: "P2"
+    description: "并发和幂等性"
+  - id: "performance"
+    name: "性能测试"
+    prefix: "TC-PF"
+    priority: "P2"
+    description: "性能指标验证"

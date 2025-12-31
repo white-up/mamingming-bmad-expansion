@@ -1,0 +1,104 @@
+# 代码分析子工作流配置
+name: "code-analysis"
+version: "1.0.0"
+description: "深度分析代码逻辑，生成功能分析报告"
+parent: "JL-Ship-AnalyzeCode"
+
+# 继承父工作流配置
+inherits:
+  - config_source
+  - output_folder
+  - communication_language
+  - document_output_language
+  - templates
+
+# 子工作流路径
+instructions: "{parent_path}/workflows/code-analysis-instructions.md"
+
+# 模板引用
+template: "{templates.analyze_template}"
+
+# 输入配置
+inputs:
+  context_summary:
+    description: "上下文分析摘要"
+    required: true
+  analysis_target:
+    description: "分析目标"
+    required: true
+  user_role:
+    description: "用户角色"
+    required: true
+  focus_areas:
+    description: "分析重点领域"
+    required: true
+  related_docs:
+    description: "相关文档"
+    required: false
+  output_dir:
+    description: "输出目录"
+    inherited: true
+
+# 输出配置
+outputs:
+  report_path:
+    description: "生成的分析报告路径"
+  business_flows:
+    description: "识别的业务流程"
+  business_rules:
+    description: "识别的业务规则"
+  state_machines:
+    description: "识别的状态机"
+  external_dependencies:
+    description: "外部依赖"
+
+# 分析维度
+analysis_dimensions:
+  - id: "business_context"
+    name: "业务背景"
+    sections:
+      - "user_story"
+      - "core_value"
+  - id: "process_flow"
+    name: "业务流程"
+    sections:
+      - "flowchart"
+      - "step_details"
+  - id: "business_rules"
+    name: "业务规则"
+    sections:
+      - "validation_rules"
+      - "processing_logic"
+      - "state_machine"
+  - id: "technical"
+    name: "技术设计"
+    sections:
+      - "data_model"
+      - "api_definition"
+      - "dependencies"
+  - id: "edge_cases"
+    name: "边界处理"
+    sections:
+      - "exception_handling"
+      - "edge_scenarios"
+
+# 执行步骤概要
+steps_overview:
+  - id: "analyze_business"
+    name: "业务逻辑分析"
+    description: "分析业务背景、核心价值、用户故事"
+  - id: "analyze_flow"
+    name: "流程分析"
+    description: "分析业务流程，绘制流程图"
+  - id: "analyze_rules"
+    name: "规则分析"
+    description: "提取业务规则、状态流转"
+  - id: "analyze_technical"
+    name: "技术分析"
+    description: "分析数据模型、接口、依赖"
+  - id: "analyze_edge"
+    name: "边界分析"
+    description: "分析异常场景和边界处理"
+  - id: "generate_report"
+    name: "生成报告"
+    description: "基于模板生成完整分析报告"

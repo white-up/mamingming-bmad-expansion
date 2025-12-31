@@ -1,0 +1,38 @@
+# 事件风暴子工作流配置
+name: "JL-Design-DDD-EventStorming"
+description: "事件风暴和初步 DDD 建模子工作流"
+author: "JL"
+
+# 这是由 JL-Design-DDD/workflow.yaml 调用的子工作流
+parent_workflow: "{project-root}/_bmad/bmm/workflows/JL-Design-DDD/workflow.yaml"
+
+# 从父工作流继承的关键变量
+config_source: "{project-root}/_bmad/bmm/config.yaml"
+output_folder: "{config_source}:output_folder"
+user_name: "{config_source}:user_name"
+communication_language: "{config_source}:communication_language"
+date: system-generated
+
+# 模块路径和组件文件
+installed_path: "{project-root}/_bmad/bmm/workflows/JL-Design-DDD/workflows"
+template: false # 动作工作流
+instructions: "{installed_path}/event-storming-instructions.md"
+validation: "{project-root}/_bmad/bmm/workflows/JL-Design-DDD/checklist.md"
+
+# 模板文件
+ddd_template: "{project-root}/_bmad/bmm/templates/JL-Template-DDD-Design.md"
+
+# 运行时输入（从父工作流传递）
+inputs:
+  req_path: ""
+  output_dir: ""
+  requirements_doc_path: ""
+  resume_mode: false
+
+# 输出
+outputs:
+  ddd_doc_partial: "{output_dir}/DDD_Design_{timestamp}.md"
+
+# 配置
+autonomous: false # 需要用户在关键决策点输入
+min_user_interactions: 5 # 事件风暴至少需要与用户进行 5 轮对话

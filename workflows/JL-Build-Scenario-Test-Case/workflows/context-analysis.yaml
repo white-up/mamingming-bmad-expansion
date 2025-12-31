@@ -1,0 +1,49 @@
+# 上下文分析子工作流配置
+name: "JL-Build-Scenario-Test-Case-ContextAnalysis"
+description: "测试上下文分析子工作流，执行拓扑还原、逻辑对齐和变量锁定"
+author: "JL"
+
+# 这是由 JL-Build-Scenario-Test-Case/workflow.yaml 调用的子工作流
+parent_workflow: "{project-root}/_bmad/bmm/workflows/JL-Build-Scenario-Test-Case/workflow.yaml"
+
+# 从父工作流继承的关键变量
+config_source: "{project-root}/_bmad/bmm/config.yaml"
+output_folder: "{config_source}:output_folder"
+user_name: "{config_source}:user_name"
+communication_language: "{config_source}:communication_language"
+date: system-generated
+
+# 模块路径和组件文件
+installed_path: "{project-root}/_bmad/bmm/workflows/JL-Build-Scenario-Test-Case/workflows"
+template: false # 动作工作流
+instructions: "{installed_path}/context-analysis-instructions.md"
+validation: "{project-root}/_bmad/bmm/workflows/JL-Build-Scenario-Test-Case/checklist.md"
+
+# 运行时输入（从父工作流传递）
+inputs:
+  req_path: ""
+  code_path: ""
+  log_path: ""
+  output_dir: ""
+  resume_mode: false
+
+# 输出
+outputs:
+  service_topology: "服务组件拓扑"
+  state_machine: "业务状态机"
+  business_keys: "关键业务主键"
+
+# 配置
+autonomous: false # 需要用户在关键决策点输入
+
+# 分析任务
+analysis_tasks:
+  - id: "topology_restore"
+    name: "拓扑还原"
+    description: "识别服务组件、数据库表及外部 API 交互"
+  - id: "logic_alignment"
+    name: "逻辑对齐"
+    description: "分析业务状态机变更"
+  - id: "variable_lock"
+    name: "变量锁定"
+    description: "识别关键业务主键和传递链路"

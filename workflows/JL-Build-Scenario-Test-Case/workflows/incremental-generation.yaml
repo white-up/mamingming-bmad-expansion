@@ -1,0 +1,40 @@
+# 增量生成子工作流配置
+name: "JL-Build-Scenario-Test-Case-IncrementalGeneration"
+description: "增量场景添加子工作流，在现有报告基础上添加新的测试场景"
+author: "JL"
+
+# 这是由 JL-Build-Scenario-Test-Case/workflow.yaml 调用的子工作流
+parent_workflow: "{project-root}/_bmad/bmm/workflows/JL-Build-Scenario-Test-Case/workflow.yaml"
+
+# 从父工作流继承的关键变量
+config_source: "{project-root}/_bmad/bmm/config.yaml"
+output_folder: "{config_source}:output_folder"
+user_name: "{config_source}:user_name"
+communication_language: "{config_source}:communication_language"
+date: system-generated
+
+# 模块路径和组件文件
+installed_path: "{project-root}/_bmad/bmm/workflows/JL-Build-Scenario-Test-Case/workflows"
+template: false # 动作工作流
+instructions: "{installed_path}/incremental-generation-instructions.md"
+validation: "{project-root}/_bmad/bmm/workflows/JL-Build-Scenario-Test-Case/checklist.md"
+
+# 运行时输入（从父工作流传递）
+inputs:
+  existing_report_path: ""
+  output_dir: ""
+
+# 输出
+outputs:
+  updated_report: "更新后的测试报告"
+  backup_report: "原报告备份"
+
+# 配置
+autonomous: false # 需要用户在关键决策点输入
+
+# 增量模式配置
+incremental_config:
+  backup_enabled: true
+  backup_directory: ".archive"
+  merge_strategy: "append" # append | replace | merge
+  id_continuation: true # 自动延续场景 ID

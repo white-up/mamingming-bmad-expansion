@@ -1,0 +1,112 @@
+# 知识库条目生成工作流配置
+name: "JL-Ship-GenKnowledge"
+version: "1.0.0"
+description: "由 JL-AG-ARCH 专家将问题和解决方案转换为结构化知识库条目，用于语义搜索系统"
+author: "JL"
+
+# 关键变量配置
+config_source: "{project-root}/_bmad/bmm/config.yaml"
+output_folder: "{config_source}:output_folder"
+planning_artifacts: "{config_source}:planning_artifacts"
+implementation_artifacts: "{config_source}:implementation_artifacts"
+user_name: "{config_source}:user_name"
+communication_language: "{config_source}:communication_language"
+document_output_language: "{config_source}:document_output_language"
+date: system-generated
+
+# 模块路径和组件文件
+installed_path: "{project-root}/_bmad/bmm/workflows/JL-Ship-GenKnowledge"
+instructions: "{installed_path}/instructions.md"
+validation: "{installed_path}/checklist.md"
+
+# 模板文件路径
+templates:
+  knowledge_template: "{project-root}/_bmad/bmm/templates/JL-Template-Knowledge-Entry.md"
+
+# 输入配置
+inputs:
+  problem_description:
+    description: "问题描述"
+    default: ""
+  solution_description:
+    description: "解决方案描述"
+    default: ""
+  business_module:
+    description: "业务模块"
+    default: ""
+  output_dir:
+    description: "输出目录"
+    default: "{output_folder}/knowledge"
+
+# 输出配置
+# 主要输出: {output_dir}/
+# - Business_Knowledge_{timestamp}.md    知识库QA条目
+# - knowledge-state.json                 工作流状态文件
+
+standalone: true
+
+web_bundle: false
+
+# 核心配置：触发方式
+trigger:
+  type: "command"
+  pattern: "JL-Ship-GenKnowledge"
+
+# 工作流模式
+modes:
+  - id: "single_entry"
+    name: "单条目生成"
+    description: "为单个问题生成知识库条目"
+  - id: "batch_entry"
+    name: "批量生成"
+    description: "批量处理多个问题，生成多个条目"
+  - id: "refine_entry"
+    name: "优化条目"
+    description: "优化已有的知识库条目"
+  - id: "resume"
+    name: "恢复生成"
+    description: "从上次中断的位置继续"
+
+# 标题生成规则
+title_rules:
+  - id: "keyword_first"
+    name: "关键词前置"
+    description: "将核心业务模块放在最前面，使用【】标注"
+    example:
+      bad: "如何修改客户的收货地址？"
+      good: "【客户管理】修改订单收货地址的操作流程"
+  - id: "no_colloquial"
+    name: "拒绝口语化"
+    description: "删除'请问'、'帮我'、'解决一下'等无意义词汇"
+  - id: "include_features"
+    name: "包含特征词"
+    description: "涉及特定错误码、状态或系统，必须在标题中体现"
+  - id: "synonyms"
+    name: "覆盖同义词"
+    description: "在括号中补充可能的搜索关键词（语义扩展）"
+    example: "【财务对账】发票红冲申请（退票/冲红/开票错误）"
+
+# 内容生成规则
+content_rules:
+  - id: "structured"
+    name: "结构化呈现"
+    description: "使用'场景描述'、'操作步骤'、'注意事项'三个模块"
+  - id: "no_redundancy"
+    name: "去冗余化"
+    description: "剔除沟通中的客套话和无关的排查废话"
+  - id: "action_oriented"
+    name: "动作导向"
+    description: "步骤必须以动词开头（点击、打开、选择、输入）"
+
+# 业务模块分类（可扩展）
+business_modules:
+  - "订单管理"
+  - "订单售后"
+  - "客户管理"
+  - "财务对账"
+  - "库存管理"
+  - "物流配送"
+  - "系统配置"
+  - "权限管理"
+  - "报表统计"
+  - "其他"

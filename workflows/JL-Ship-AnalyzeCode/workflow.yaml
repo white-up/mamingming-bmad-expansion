@@ -1,0 +1,128 @@
+# Java 代码逆向分析工作流配置
+name: "JL-Ship-AnalyzeCode"
+version: "1.0.0"
+description: "由 JL-AG-ARCH 专家深度逆向分析 Java 代码，生成功能分析报告"
+author: "JL"
+
+# 关键变量配置
+config_source: "{project-root}/_bmad/bmm/config.yaml"
+output_folder: "{config_source}:output_folder"
+planning_artifacts: "{config_source}:planning_artifacts"
+implementation_artifacts: "{config_source}:implementation_artifacts"
+user_name: "{config_source}:user_name"
+communication_language: "{config_source}:communication_language"
+document_output_language: "{config_source}:document_output_language"
+date: system-generated
+
+# 模块路径和组件文件
+installed_path: "{project-root}/_bmad/bmm/workflows/JL-Ship-AnalyzeCode"
+instructions: "{installed_path}/instructions.md"
+validation: "{installed_path}/checklist.md"
+
+# 模板文件路径
+templates:
+  analyze_template: "{project-root}/_bmad/bmm/templates/JL-Template-Analyze-Code.md"
+
+# 知识库引用
+knowledge_base:
+  - "Java编码规范"
+  - "架构设计规范"
+  - "DDD与可视化规范"
+
+# 输入配置
+inputs:
+  doc_path:
+    description: "相关文档目录"
+    default:
+      - "{output_folder}"
+      - "{planning_artifacts}"
+  code_path:
+    description: "待分析代码路径"
+    default: ""
+  user_role:
+    description: "用户角色（开发人员/架构师/测试人员/业务人员）"
+    default: ""
+  focus_areas:
+    description: "重点关注领域"
+    default: []
+  output_dir:
+    description: "输出目录"
+    default: "{output_folder}/ship"
+
+# 输出配置
+# 主要输出: {output_dir}/
+# - Analyze_Code_{timestamp}.md          功能分析报告
+# - analyze-state.json                   工作流状态文件
+
+standalone: true
+
+web_bundle: false
+
+# 核心配置：触发方式
+trigger:
+  type: "command"
+  pattern: "JL-Ship-AnalyzeCode"
+
+# 工作流模式
+modes:
+  - id: "full_analysis"
+    name: "完整分析"
+    description: "对选定代码进行全面深度逆向分析"
+  - id: "quick_analysis"
+    name: "快速分析"
+    description: "快速了解代码主要功能和结构"
+  - id: "focused_analysis"
+    name: "聚焦分析"
+    description: "针对特定角色需求进行定向分析"
+  - id: "resume"
+    name: "恢复分析"
+    description: "从上次中断的位置继续"
+
+# 分析视角（基于用户角色）
+analysis_perspectives:
+  - id: "developer"
+    name: "开发人员视角"
+    focus:
+      - "代码逻辑推演"
+      - "数据流转"
+      - "异常处理"
+      - "性能优化点"
+  - id: "architect"
+    name: "架构师视角"
+    focus:
+      - "架构设计模式"
+      - "模块职责划分"
+      - "系统集成点"
+      - "技术选型评估"
+  - id: "tester"
+    name: "测试人员视角"
+    focus:
+      - "业务逻辑边界"
+      - "输入输出验证"
+      - "异常场景"
+      - "测试覆盖点"
+  - id: "business"
+    name: "业务人员视角"
+    focus:
+      - "业务规则实现"
+      - "状态流转逻辑"
+      - "业务约束条件"
+      - "功能验收标准"
+
+# 分析维度
+analysis_dimensions:
+  - id: "business_logic"
+    name: "业务逻辑"
+    description: "核心业务规则和流程实现"
+  - id: "data_flow"
+    name: "数据流转"
+    description: "数据的输入、处理、输出流程"
+  - id: "exception_handling"
+    name: "异常处理"
+    description: "异常场景和处理策略"
+  - id: "external_dependencies"
+    name: "外部依赖"
+    description: "第三方服务、数据库、消息队列等"
+  - id: "state_machine"
+    name: "状态流转"
+    description: "核心实体的状态机设计"

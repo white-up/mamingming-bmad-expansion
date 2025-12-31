@@ -1,0 +1,90 @@
+# 知识库条目生成子工作流配置
+name: "knowledge-generation"
+version: "1.0.0"
+description: "将问题和解决方案转换为结构化知识库条目"
+parent: "JL-Ship-GenKnowledge"
+
+# 继承父工作流配置
+inherits:
+  - config_source
+  - output_folder
+  - communication_language
+  - document_output_language
+  - templates
+
+# 子工作流路径
+instructions: "{parent_path}/workflows/knowledge-generation-instructions.md"
+
+# 模板引用
+template: "{templates.knowledge_template}"
+
+# 输入配置
+inputs:
+  problem_description:
+    description: "问题描述（原始输入）"
+    required: true
+  solution_description:
+    description: "解决方案描述（原始输入）"
+    required: true
+  business_module:
+    description: "业务模块分类"
+    required: true
+  output_dir:
+    description: "输出目录"
+    inherited: true
+  batch_mode:
+    description: "是否批量模式"
+    default: false
+
+# 输出配置
+outputs:
+  entry_path:
+    description: "生成的知识库条目路径"
+  entry_title:
+    description: "生成的条目标题"
+  entry_content:
+    description: "生成的条目内容"
+
+# 标题生成规则
+title_generation:
+  format: "【{business_module}】{action} + {object} ({synonyms})"
+  rules:
+    - "关键词前置：业务模块使用【】标注放在最前面"
+    - "拒绝口语化：删除请问、帮我、解决一下等词汇"
+    - "包含特征词：错误码、状态、系统名称必须体现"
+    - "覆盖同义词：括号中补充可能的搜索关键词"
+
+# 内容生成规则
+content_generation:
+  structure:
+    - section: "问题背景"
+      description: "一句话描述问题发生的场景或触发条件"
+    - section: "解决方案"
+      description: "编号列表，每步以动词开头"
+    - section: "注意事项"
+      description: "权限要求、避坑点（可选）"
+  rules:
+    - "结构化呈现：使用场景描述、操作步骤、注意事项三模块"
+    - "去冗余化：剔除客套话和无关排查废话"
+    - "动作导向：步骤必须以动词开头"
+
+# 执行步骤概要
+steps_overview:
+  - id: "analyze_input"
+    name: "分析输入内容"
+    description: "解析原始问题和解决方案，提取关键信息"
+  - id: "generate_title"
+    name: "生成标题"
+    description: "按规则生成符合语义搜索优化的标题"
+  - id: "structure_content"
+    name: "结构化内容"
+    description: "将解决方案转换为标准SOP格式"
+  - id: "optimize_entry"
+    name: "优化条目"
+    description: "去冗余化，确保动词开头"
+  - id: "validate_entry"
+    name: "验证条目"
+    description: "检查条目是否符合所有规则"
+  - id: "save_entry"
+    name: "保存条目"
+    description: "保存生成的知识库条目"

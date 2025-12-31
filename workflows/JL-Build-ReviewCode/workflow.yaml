@@ -1,0 +1,132 @@
+# 代码审查工作流配置
+name: "JL-Build-ReviewCode"
+version: "1.0.0"
+description: "由 JL-AG-QA 专家基于 Java 编码规范和架构设计规范，对指定代码进行深度审查并生成详细报告"
+author: "JL"
+
+# 关键变量配置
+config_source: "{project-root}/_bmad/bmm/config.yaml"
+output_folder: "{config_source}:output_folder"
+planning_artifacts: "{config_source}:planning_artifacts"
+implementation_artifacts: "{config_source}:implementation_artifacts"
+user_name: "{config_source}:user_name"
+communication_language: "{config_source}:communication_language"
+document_output_language: "{config_source}:document_output_language"
+date: system-generated
+
+# 模块路径和组件文件
+installed_path: "{project-root}/_bmad/bmm/workflows/JL-Build-ReviewCode"
+instructions: "{installed_path}/instructions.md"
+validation: "{installed_path}/checklist.md"
+
+# 模板文件路径
+templates:
+  cr_template: "{project-root}/_bmad/bmm/templates/JL-Template-CR.md"
+
+# 知识库引用
+knowledge_base:
+  - "Java编码规范"
+  - "架构设计规范"
+  - "DDD与可视化规范"
+
+# 输入配置
+inputs:
+  code_path:
+    description: "待审查代码路径"
+    default: ""
+  commit_range:
+    description: "Git 提交范围（可选）"
+    default: ""
+  focus_areas:
+    description: "重点检查领域"
+    default: []
+  output_dir:
+    description: "输出目录"
+    default: "{output_folder}/quality"
+
+# 输出配置
+# 主要输出: {output_dir}/
+# - CR_{timestamp}.md                 代码审查报告
+# - review-state.json                 工作流状态文件
+
+standalone: true
+
+web_bundle: false
+
+# 核心配置：触发方式
+trigger:
+  type: "command"
+  pattern: "JL-Build-ReviewCode"
+
+# 工作流模式
+modes:
+  - id: "full_review"
+    name: "完整审查"
+    description: "对选定代码进行全面深度审查"
+  - id: "quick_review"
+    name: "快速审查"
+    description: "快速检查关键问题，适用于小改动"
+  - id: "focused_review"
+    name: "聚焦审查"
+    description: "针对特定领域进行深度审查"
+  - id: "resume"
+    name: "恢复审查"
+    description: "从上次中断的位置继续"
+
+# 审查维度
+review_dimensions:
+  - id: "code_compliance"
+    name: "代码规约"
+    weight: 30
+    items:
+      - "Java 命名规范"
+      - "异常处理规范"
+      - "日志规范"
+      - "注释规范"
+  - id: "architecture"
+    name: "架构设计"
+    weight: 30
+    items:
+      - "封装性"
+      - "聚合边界"
+      - "领域逻辑"
+      - "值对象使用"
+  - id: "security"
+    name: "安全性"
+    weight: 20
+    items:
+      - "OWASP 检查"
+      - "SQL 注入防护"
+      - "XSS 防护"
+      - "敏感数据处理"
+  - id: "quality"
+    name: "代码质量"
+    weight: 20
+    items:
+      - "单元测试覆盖"
+      - "代码复杂度"
+      - "重复代码"
+      - "性能隐患"
+
+# 问题严重程度定义
+severity_levels:
+  - id: "critical"
+    name: "严重问题"
+    symbol: "🔴"
+    description: "必须修复，阻塞合并"
+    score_impact: -20
+  - id: "major"
+    name: "主要问题"
+    symbol: "🟠"
+    description: "应该修复，影响质量"
+    score_impact: -10
+  - id: "minor"
+    name: "次要问题"
+    symbol: "🟡"
+    description: "建议修复，代码改进"
+    score_impact: -5
+  - id: "info"
+    name: "提示信息"
+    symbol: "🔵"
+    description: "可选优化，最佳实践"
+    score_impact: 0

@@ -1,0 +1,68 @@
+# 报告生成子工作流配置
+name: "JL-Build-Scenario-Test-Case-ReportGeneration"
+description: "场景测试报告生成子工作流，生成完整的测试报告和执行脚本"
+author: "JL"
+
+# 这是由 JL-Build-Scenario-Test-Case/workflow.yaml 调用的子工作流
+parent_workflow: "{project-root}/_bmad/bmm/workflows/JL-Build-Scenario-Test-Case/workflow.yaml"
+
+# 从父工作流继承的关键变量
+config_source: "{project-root}/_bmad/bmm/config.yaml"
+output_folder: "{config_source}:output_folder"
+user_name: "{config_source}:user_name"
+communication_language: "{config_source}:communication_language"
+date: system-generated
+
+# 模块路径和组件文件
+installed_path: "{project-root}/_bmad/bmm/workflows/JL-Build-Scenario-Test-Case/workflows"
+template: false # 动作工作流
+instructions: "{installed_path}/report-generation-instructions.md"
+validation: "{project-root}/_bmad/bmm/workflows/JL-Build-Scenario-Test-Case/checklist.md"
+
+# 模板文件
+scenario_test_template: "{project-root}/_bmad/bmm/templates/JL-Template-Scenario-Test-Case.md"
+
+# 运行时输入（从父工作流传递）
+inputs:
+  scenarios_list: ""
+  context_analysis_results: ""
+  output_dir: ""
+  resume_mode: false
+
+# 输出
+outputs:
+  report_file: "{output_dir}/Scenario_Test_Case_{timestamp}.md"
+
+# 配置
+autonomous: false # 需要用户在关键决策点输入
+
+# 报告组成部分
+report_sections:
+  - id: "scenario_overview"
+    name: "测试场景概览"
+    format: "table"
+  - id: "business_logic"
+    name: "业务逻辑与流程"
+    format: "markdown + mermaid"
+  - id: "curl_scripts"
+    name: "接口请求脚本"
+    format: "bash"
+  - id: "sql_scripts"
+    name: "数据准备与校验"
+    format: "sql"
+  - id: "python_scripts"
+    name: "自动化验证"
+    format: "python"
+
+# 数据安全配置
+data_security:
+  desensitization_required: true
+  placeholder_format: "{{PLACEHOLDER}}"
+  sensitive_patterns:
+    - "password"
+    - "token"
+    - "secret"
+    - "key"
+    - "phone"
+    - "mobile"
+    - "ip_address"

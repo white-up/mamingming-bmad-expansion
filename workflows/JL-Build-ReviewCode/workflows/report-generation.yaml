@@ -1,0 +1,60 @@
+# 报告生成子工作流配置
+name: "JL-Build-ReviewCode-ReportGeneration"
+description: "代码审查报告生成子工作流，整合所有检查结果生成完整报告"
+author: "JL"
+
+# 这是由 JL-Build-ReviewCode/workflow.yaml 调用的子工作流
+parent_workflow: "{project-root}/_bmad/bmm/workflows/JL-Build-ReviewCode/workflow.yaml"
+
+# 从父工作流继承的关键变量
+config_source: "{project-root}/_bmad/bmm/config.yaml"
+output_folder: "{config_source}:output_folder"
+user_name: "{config_source}:user_name"
+communication_language: "{config_source}:communication_language"
+date: system-generated
+
+# 模块路径和组件文件
+installed_path: "{project-root}/_bmad/bmm/workflows/JL-Build-ReviewCode/workflows"
+template: false
+instructions: "{installed_path}/report-generation-instructions.md"
+validation: "{project-root}/_bmad/bmm/workflows/JL-Build-ReviewCode/checklist.md"
+
+# 模板文件
+cr_template: "{project-root}/_bmad/bmm/templates/JL-Template-CR.md"
+
+# 运行时输入
+inputs:
+  compliance_results: ""
+  architecture_results: ""
+  security_results: ""
+  output_dir: ""
+
+# 输出
+outputs:
+  report_file: "{output_dir}/CR_{timestamp}.md"
+
+# 配置
+autonomous: false
+
+# 报告组成部分
+report_sections:
+  - id: "executive_summary"
+    name: "审查摘要"
+  - id: "compliance_check"
+    name: "代码规约检查"
+  - id: "architecture_check"
+    name: "架构设计检查"
+  - id: "detailed_findings"
+    name: "详细发现"
+  - id: "conclusion"
+    name: "结论与建议"
+
+# 评分计算
+scoring:
+  weights:
+    compliance: 30
+    architecture: 30
+    security: 20
+    quality: 20
+  pass_threshold: 80
+  conditional_threshold: 60

@@ -1,0 +1,63 @@
+# 架构设计检查子工作流配置
+name: "JL-Build-ReviewCode-ArchitectureReview"
+description: "架构设计检查子工作流，检查封装性、聚合边界、领域逻辑、值对象使用、分层架构"
+author: "JL"
+
+# 这是由 JL-Build-ReviewCode/workflow.yaml 调用的子工作流
+parent_workflow: "{project-root}/_bmad/bmm/workflows/JL-Build-ReviewCode/workflow.yaml"
+
+# 从父工作流继承的关键变量
+config_source: "{project-root}/_bmad/bmm/config.yaml"
+output_folder: "{config_source}:output_folder"
+user_name: "{config_source}:user_name"
+communication_language: "{config_source}:communication_language"
+date: system-generated
+
+# 模块路径和组件文件
+installed_path: "{project-root}/_bmad/bmm/workflows/JL-Build-ReviewCode/workflows"
+template: false
+instructions: "{installed_path}/architecture-review-instructions.md"
+validation: "{project-root}/_bmad/bmm/workflows/JL-Build-ReviewCode/checklist.md"
+
+# 知识库引用
+knowledge_base:
+  - "架构设计规范"
+  - "DDD与可视化规范"
+
+# 运行时输入
+inputs:
+  code_context: ""
+  compliance_results: ""
+  output_dir: ""
+  resume_mode: false
+
+# 输出
+outputs:
+  architecture_score: "架构设计得分"
+  architecture_findings: "发现的问题列表"
+
+# 配置
+autonomous: false
+
+# 检查维度
+check_dimensions:
+  - id: "encapsulation"
+    name: "封装性"
+    weight: 20
+    max_score: 5
+  - id: "aggregate_boundary"
+    name: "聚合边界"
+    weight: 25
+    max_score: 5
+  - id: "domain_logic"
+    name: "领域逻辑"
+    weight: 25
+    max_score: 5
+  - id: "value_object"
+    name: "值对象使用"
+    weight: 15
+    max_score: 5
+  - id: "layered_architecture"
+    name: "分层架构"
+    weight: 15
+    max_score: 5

@@ -1,0 +1,66 @@
+# DDD 系统设计工作流配置
+name: "JL-Design-DDD"
+version: "1.0.0"
+description: "由 JL-AG-ARCH 基于需求文档，进行产研统一设计和 DDD 领域建模，输出完整的设计文档体系"
+author: "JL"
+
+# 关键变量配置
+config_source: "{project-root}/_bmad/bmm/config.yaml"
+output_folder: "{config_source}:output_folder"
+planning_artifacts: "{config_source}:planning_artifacts"
+implementation_artifacts: "{config_source}:implementation_artifacts"
+user_name: "{config_source}:user_name"
+communication_language: "{config_source}:communication_language"
+document_output_language: "{config_source}:document_output_language"
+date: system-generated
+
+# 模块路径和组件文件
+installed_path: "{project-root}/_bmad/bmm/workflows/JL-Design-DDD"
+instructions: "{installed_path}/instructions.md"
+validation: "{installed_path}/checklist.md"
+
+# 模板文件路径
+templates:
+  ddd_template: "{project-root}/_bmad/bmm/templates/JL-Template-DDD-Design.md"
+  requirements_template: "{project-root}/_bmad/bmm/templates/JL-Template-Requirements-Design.md"
+
+# 输入配置
+inputs:
+  req_path:
+    description: "PRD 文档路径"
+    default:
+      - "{planning_artifacts}/prd.md"
+      - "{output_folder}/feature/prd.md"
+  output_dir:
+    description: "输出目录"
+    default: "{output_folder}/design"
+
+# 输出配置
+# 主要输出: {output_dir}/
+# - Requirements_Design_{timestamp}.md  产研统一设计文档
+# - DDD_Design_{timestamp}.md           DDD建模报告
+# - design-state.json                    工作流状态文件
+
+standalone: true
+
+web_bundle: false
+
+# 核心配置：触发方式
+trigger:
+  type: "command"
+  pattern: "JL-Design-DDD"
+
+# 工作流模式
+modes:
+  - id: "full_design"
+    name: "完整设计流程"
+    description: "从需求分析到 DDD 建模的完整设计流程"
+  - id: "requirements_only"
+    name: "仅产研设计"
+    description: "仅生成产研统一设计文档"
+  - id: "ddd_only"
+    name: "仅 DDD 建模"
+    description: "基于已有设计文档进行 DDD 建模"
+  - id: "resume"
+    name: "恢复设计"
+    description: "从上次中断的位置继续"

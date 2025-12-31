@@ -1,0 +1,56 @@
+# 上下文分析子工作流配置
+name: "context-analysis"
+version: "1.0.0"
+description: "分析代码上下文，识别分析目标，加载相关文档"
+parent: "JL-Ship-AnalyzeCode"
+
+# 继承父工作流配置
+inherits:
+  - config_source
+  - output_folder
+  - planning_artifacts
+  - communication_language
+  - document_output_language
+
+# 子工作流路径
+instructions: "{parent_path}/workflows/context-analysis-instructions.md"
+
+# 输入配置
+inputs:
+  code_context:
+    description: "当前上下文中的代码"
+    required: true
+  doc_path:
+    description: "相关文档目录"
+    inherited: true
+  user_role:
+    description: "用户角色"
+    required: false
+
+# 输出配置
+outputs:
+  analysis_target:
+    description: "识别的分析目标"
+  identified_classes:
+    description: "识别的类列表"
+  identified_methods:
+    description: "识别的方法列表"
+  related_docs:
+    description: "关联的文档列表"
+  context_summary:
+    description: "上下文分析摘要"
+
+# 执行步骤概要
+steps_overview:
+  - id: "identify_code"
+    name: "识别代码内容"
+    description: "分析上下文中的代码，识别类、方法、模块"
+  - id: "load_docs"
+    name: "加载相关文档"
+    description: "检查并加载相关的设计文档、PRD等"
+  - id: "confirm_scope"
+    name: "确认分析范围"
+    description: "与用户确认分析目标和重点"
+  - id: "determine_focus"
+    name: "确定分析重点"
+    description: "根据用户角色确定分析重点领域"

@@ -1,0 +1,85 @@
+# 场景测试用例生成工作流配置
+name: "JL-Build-Scenario-Test-Case"
+version: "1.0.0"
+description: "由 JL-AG-QA 专家基于项目文档、代码和日志，逆向还原业务逻辑并生成高质量的场景测试报告"
+author: "JL"
+
+# 关键变量配置
+config_source: "{project-root}/_bmad/bmm/config.yaml"
+output_folder: "{config_source}:output_folder"
+planning_artifacts: "{config_source}:planning_artifacts"
+implementation_artifacts: "{config_source}:implementation_artifacts"
+user_name: "{config_source}:user_name"
+communication_language: "{config_source}:communication_language"
+document_output_language: "{config_source}:document_output_language"
+date: system-generated
+
+# 模块路径和组件文件
+installed_path: "{project-root}/_bmad/bmm/workflows/JL-Build-Scenario-Test-Case"
+instructions: "{installed_path}/instructions.md"
+validation: "{installed_path}/checklist.md"
+
+# 模板文件路径
+templates:
+  scenario_test_template: "{project-root}/_bmad/bmm/templates/JL-Template-Scenario-Test-Case.md"
+
+# 输入配置
+inputs:
+  req_path:
+    description: "项目文档路径"
+    default:
+      - "{planning_artifacts}"
+      - "{output_folder}"
+  code_path:
+    description: "代码路径（可选）"
+    default: ""
+  log_path:
+    description: "日志文件路径（可选）"
+    default: ""
+  output_dir:
+    description: "输出目录"
+    default: "{output_folder}/quality"
+
+# 输出配置
+# 主要输出: {output_dir}/
+# - Scenario_Test_Case_{timestamp}.md   场景测试报告
+# - test-case-state.json                 工作流状态文件
+
+standalone: true
+
+web_bundle: false
+
+# 核心配置：触发方式
+trigger:
+  type: "command"
+  pattern: "JL-Build-Scenario-Test-Case"
+
+# 工作流模式
+modes:
+  - id: "full_generation"
+    name: "完整生成流程"
+    description: "从上下文分析到测试报告的完整生成流程"
+  - id: "incremental"
+    name: "增量生成"
+    description: "基于已有报告增量添加测试场景"
+  - id: "resume"
+    name: "恢复生成"
+    description: "从上次中断的位置继续"
+
+# 测试场景类型
+scenario_types:
+  - id: "happy_path"
+    name: "正常流程"
+    priority: "P0"
+  - id: "exception"
+    name: "异常流程"
+    priority: "P1"
+  - id: "boundary"
+    name: "边界测试"
+    priority: "P1"
+  - id: "concurrency"
+    name: "并发测试"
+    priority: "P2"
+  - id: "performance"
+    name: "性能测试"
+    priority: "P2"

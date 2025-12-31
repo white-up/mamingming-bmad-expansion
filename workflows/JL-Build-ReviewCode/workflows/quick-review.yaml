@@ -1,0 +1,41 @@
+# 快速审查子工作流配置
+name: "JL-Build-ReviewCode-QuickReview"
+description: "快速代码审查子工作流，适用于小改动，仅检查关键问题"
+author: "JL"
+
+# 这是由 JL-Build-ReviewCode/workflow.yaml 调用的子工作流
+parent_workflow: "{project-root}/_bmad/bmm/workflows/JL-Build-ReviewCode/workflow.yaml"
+
+# 从父工作流继承的关键变量
+config_source: "{project-root}/_bmad/bmm/config.yaml"
+output_folder: "{config_source}:output_folder"
+user_name: "{config_source}:user_name"
+communication_language: "{config_source}:communication_language"
+date: system-generated
+
+# 模块路径和组件文件
+installed_path: "{project-root}/_bmad/bmm/workflows/JL-Build-ReviewCode/workflows"
+template: false
+instructions: "{installed_path}/quick-review-instructions.md"
+validation: "{project-root}/_bmad/bmm/workflows/JL-Build-ReviewCode/checklist.md"
+
+# 运行时输入
+inputs:
+  code_context: ""
+  output_dir: ""
+
+# 输出
+outputs:
+  report_file: "{output_dir}/CR_Quick_{timestamp}.md"
+
+# 配置
+autonomous: false
+max_lines: 200 # 适用于小于 200 行的变更
+
+# 快速检查项（仅检查关键问题）
+quick_checks:
+  - "明显的安全漏洞"
+  - "严重的编码问题"
+  - "明显的架构违规"
+  - "空指针风险"
+  - "资源泄露"
