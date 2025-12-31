@@ -1,0 +1,103 @@
+# Workflow 元数据
+name: "Analyze Java Code"
+description: "由 JL-AG-ARCH 专家深度逆向分析 Java 代码"
+
+# 定义输入
+inputs:
+  doc_path:
+    description: "文档目录"
+    default:
+      - "{output_folder}"
+      - "{planning_artifacts}"
+  template_file:
+    description: "模板文件"
+    default: "../templates/arch/JL-Template-Analyze-Code.md"
+  output_dir:
+    default:
+      - "{output_folder}/ship"
+
+
+# 核心配置：触发方式
+trigger:
+  type: "command"
+  pattern: "JL-Ship-AnalyzeCode"
+
+# 定义执行步骤
+steps:
+  - id: "step_1"
+    name: "Check Analyze Context"
+    agent: "JL-AG-ARCH"
+    prompt: >
+      **请先读取下列资源**：
+      - 当前的上下文
+      - 我的补充输入
+
+      **当前步骤目标**：
+      评估加载的资源内容足够，可以明确用户需要分析的功能及其范围。基于你的评估情况按下列规则回复
+
+      1. 如果上下文包含分析目标：
+         请简要概括你识别到的业功能逻辑，并询问："我准备为 [功能/模块] 生成功能分析报告。请确认：是否分析该功能？是否需要我重点关注哪些逻辑？您的角色是什么？"
+
+      2. 如果上下文不明确：
+         请回复："我已就绪。请告诉我您希望需要分析的功能及其范围。您的角色是什么？"
+
+      请勿在此步骤生成完整文档。
+  - id: "step_2"
+    name: "Wait for User Input"
+    action: "wait_for_input"
+    prompt: "等待用户确认测试范围..."
+
+  - id: "step_3"
+    name: "Check Analysis Context & Load Related Docs"
+    agent: "JL-AG-ARCH"
+    prompt: >
+      **请先读取下列资源**：
+        - 当前的上下文
+        - `${inputs.doc_path}`路径下和功能相关的文档（如果有）
+        - 我的补充输入
+      
+      **当前步骤目标**：
+      你的任务是结合用户的身份，提供的分析目标和范围，利用已有的文档和代码来提供更准确的分析。
+
+      1. **文档关联分析**:
+         - 检查提供的相关文档（设计文档、架构文档等）
+         - 如果找到相关文档，请在分析中引用这些文档来验证代码实现是否符合设计
+
+      2. **确认分析重点**:
+         - 结合用户的角色，确认分析重点{如果是开发人员，分析重点是代码逻辑推演；如果是架构师，分析重点是架构设计；如果是测试人员或业务人员，分析重点是业务逻辑}
+         - 如果当前选中的代码很明确，请简要概括你看到的类/方法，并询问："我已准备好分析 [类名/方法名]。您是否需要我重点关注：
+
+      3. **确认分析范围**:
+         如果没有选中代码或上下文不清晰：
+         请回复："我已就绪。请选中您想要分析的 Java 代码片段，或粘贴相关代码。告诉我您希望了解这段代码的哪些方面？"
+
+      请勿在此步骤生成完整报告。
+
+  - id: "step_4"
+    name: "Wait for User Input"
+    action: "wait_for_input"
+    prompt: "等待用户确认分析范围..."
+
+  - id: "step_5"
+    name: "Analyze Code Context"
+    agent: "JL-AG-ARCH"
+    prompt: >
+      **请先读取下列资源**：
+      - 当前的上下文
+      - 我的补充输入
+      - `{input.template_file}`功能分析报告模板
+      
+      **当前步骤目标**：
+      基于这些内容，严格遵守模板生成一份完整的功能分析报告。
+
+      **特别要求**：
+      - 根据用户的关注点（如果有），重点分析相关部分。
+      请直接以“# 功能分析报告”作为输出的开头。
+
+  - id: "step_6"
+    name: "Save Analysis Report"
+    tool: "file-system"
+    action: "write"
+    params:
+      path: "{inputs.output_dir}/Analyze_Code_${timestamp}.md"
+      content: "{step_5.output}"

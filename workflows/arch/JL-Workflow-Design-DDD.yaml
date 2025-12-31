@@ -1,0 +1,163 @@
+# Workflow 元数据
+name: "DDD System Design"
+description: "由 JL-AG-ARCH 基于需求文档，进行 DDD 领域建模并输出详细设计文档"
+
+# 定义输入
+inputs:
+  ddd_template_path:
+    description: "DDD建模报告路径"
+    default:
+      - "../templates/arch/JL-Template-DDD-Design.md"
+  requirements_template_path:
+    description: "产研统一需求设计文档模板路径"
+    default:
+      - "../templates/arch/JL-Template-Requirements-Design.md"
+  req_path:
+    description: "PRD 文档路径"
+    default:
+      - "{planning_artifacts}/prd.md"
+      - "{output_folder}/feature/prd.md"
+  output_dir:
+    default:
+      - "{output_folder}/design"
+
+# 核心配置：触发方式
+trigger:
+  type: "command"
+  pattern: "JL-Design-DDD"
+
+# 定义执行步骤
+steps:
+  - id: "step_1"
+    name: "Load Context Assets"
+    agent: "JL-AG-ARCH"
+    prompt: >
+      **请先读取下列资源**：
+      - 当前的上下文
+      - 我的补充输入
+      - `{inputs.req_path}`需求描述文档
+      
+      **当前步骤目标**：
+      评估加载的资源内容足够，可以明确需求的边界和范围。基于你的评估情况按下列规则回复
+      
+      1. 如果包含足够的需求信息和代码：
+         请简要概括代码或文档内容，并询问："我已准备好需求设计。"
+      
+      2. 如果未包含足够的需求信息和代码：
+         请回复："我已就绪。请提供需求文档和代码，建议先使用BMAD流程完成PRD文档。"
+      
+      **请勿在此步骤生成完整报告**
+
+  - id: "step_2"
+    name: "Wait for User Input"
+    action: "wait_for_input"
+    prompt: "等待用户确认需求..."
+
+  - id: "step_3"
+    name: "Write Requirements Design Report"
+    agent: "JL-AG-ARCH"
+    prompt: >
+      **请先读取下列资源**：
+      - 当前的上下文
+      - 我的补充输入
+      - `{inputs.req_path}`需求描述文档
+      - `{inputs.requirements_template_path}` 产研通用需求设计文档模板
+      
+      **阶段任务**：
+      当前阶段你的唯一职责是根据输入信息，严格遵循 `强制准则`，输出一份严格遵守`产研通用需求设计文档模板`的 **结构化、无歧义、可直接落地** 的产研通用设计文档。
+      
+      **愿景**：
+      输出的产研通用设计文档能够做到产品能验证业务逻辑、研发能直接落地：
+      - 产品：明确业务边界、用户体验、优先级、验收标准；
+      - 研发：明确技术约束、功能需求、非功能指标、任务边界、代码适配方案。
+
+      **强制准则**：
+      1. **优先**提取并创建「数据字典」和「业务规则汇总」。所有后续内容必须引用这些结构化知识。
+      2. 严格对齐数据字典，在整个文档中避免同一概念使用多名称。
+      3. 避免纯业务黑话或纯技术术语，使用产研双方可理解的语言描述。
+      4. 使用一致的 Markdown 格式、列表样式和标题层级，绘图仅使用mermaid语言，确保文档清晰可读。
+      5. **自我审阅（Post-Check）：** 检查最终输出是否严格符合 `# 输出模板` 的所有**二级和三级标题**，并满足**精简准确**的目标。
+      请直接以“# 产研通用需求设计报告”作为输出的开头。
+
+  - id: "step_4"
+    name: "Save Requirements Design Report"
+    tool: "file-system"
+    action: "write"
+    params:
+      path: "{inputs.output_dir}/Requirements_Design_${timestamp}.md"
+      content: "{step_3.output}"
+
+  - id: "step_5"
+    name: "Wait for User Audit"
+    action: "wait_for_input"
+    prompt: "等待用户确认设计并按照用户需求调整..."
+
+  - id: "step_6"
+    name: "Start Event storming"
+    agent: "JL-AG-ARCH"
+    prompt: >
+      **请先读取下列资源**：
+      - 当前的上下文
+      - 我的补充输入
+      - `{inputs.req_path}`需求描述文档
+      - `{inputs.output_dir}/Requirements_Design_${timestamp}.md` 编写的产研通用设计文档
+      - `{inputs.ddd_template_path}` DDD建模报告模板
+
+      **阶段任务**：
+      当前阶段你的唯一职责是根据输入信息，通过和用户多轮对话绘制满足共识的事件风暴图，最终输出严格遵循 `强制准则`和`DDD建模报告模板`的DDD建模报告。
+
+      **愿景**：
+      通过可视化手段消除歧义，确保领域模型的准确性，最终输出“图文一致、逻辑闭环”的 DDD 设计。
+
+      **强制准则**：
+      1. 事件风暴图应当严格对其业务，样式应遵守你知识库中DDD指南(`DDD与可视化规范`)里制定的规范。
+      2. 绘图过程应当和用户不断对话，完成绘制前至少和用户进行20轮对话
+      3. 本阶段仅完成部分报告，截止至`## 设计建议`章节
+      请直接以“# DDD建模报告”作为输出的开头。
+
+  - id: "step_7"
+    name: "Save DDD Design Report"
+    tool: "file-system"
+    action: "write"
+    params:
+      path: "{inputs.output_dir}/DDD_Design_${timestamp}.md"
+      content: "{step_6.output}"
+
+  - id: "step_8"
+    name: "Wait for User Audit"
+    action: "wait_for_input"
+    prompt: "等待用户确认并按照用户需求调整..."
+
+  - id: "step_9"
+    name: "Write DDD Design Report"
+    agent: "JL-AG-ARCH"
+    prompt: >
+      **请先读取下列资源**：
+      - 当前的上下文
+      - 我的补充输入
+      - `{inputs.output_dir}/Requirements_Design_${timestamp}.md` 编写的产研通用设计文档
+      - `{inputs.ddd_template_path}` DDD建模报告模板
+      - `{inputs.output_dir}/DDD_Design_${timestamp}.md` 完成部分的DDD建模报告
+
+      **阶段任务**：
+      当前阶段你的唯一职责是根据输入信息补全DDD建模报告。
+
+      **愿景**：
+      通过可视化手段消除歧义，确保领域模型的准确性，最终输出“图文一致、逻辑闭环”的 DDD 设计。
+
+      **强制准则**：
+      1. DDD建模报告内容应当严格对其业务，样式应遵守你知识库中DDD指南(`DDD与可视化规范`)里制定的规范。
+      2. DDD建模报告格式应和`DDD建模报告模板`一致
+      请直接以“# DDD建模报告”作为输出的开头。
+  - id: "step_10"
+    name: "Update DDD Design Report"
+    tool: "file-system"
+    action: "write"
+    params:
+      path: "{inputs.output_dir}/DDD_Design_${timestamp}.md"
+      content: "{step_9.output}"
+
+  - id: "step_11"
+    name: "Wait for User Audit"
+    action: "wait_for_input"
+    prompt: "等待用户确认并按照用户需求调整..."
