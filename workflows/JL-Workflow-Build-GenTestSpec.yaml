@@ -1,11 +1,19 @@
-# Workflow 元数据
 name: "Generate Scenario Test Case"
 description: "由 JL-AG-ARCH 专家编写场景测试报告"
+author: "maxiangming"
+
+config_source: "{project-root}/_bmad/bmm/config.yaml"
+output_folder: "{config_source}:output_folder"
+planning_artifacts: "{config_source}:planning_artifacts"
+implementation_artifacts: "{config_source}:implementation_artifacts"
+user_name: "{config_source}:user_name"
+communication_language: "{config_source}:communication_language"
+document_output_language: "{config_source}:document_output_language"
 
 # 定义输入
 inputs:
   template_file:
-    default: "../templates/quality/JL-Template-Scenario-Test-Case.md"
+    default: "../templates/JL-Template-Scenario-Test-Case.md"
   output_dir:
     default: "{inputs.output_dir}/quality"
   req_path:

@@ -1,8 +1,13 @@
-# Workflow 元数据
 name: "Analyze Java Code"
 description: "由 JL-AG-ARCH 专家深度逆向分析 Java 代码"
 
-# 定义输入
+config_source: "{project-root}/_bmad/bmm/config.yaml"
+output_folder: "{config_source}:output_folder"
+planning_artifacts: "{config_source}:planning_artifacts"
+implementation_artifacts: "{config_source}:implementation_artifacts"
+user_name: "{config_source}:user_name"
+communication_language: "{config_source}:communication_language"
+document_output_language: "{config_source}:document_output_language"
 inputs:
   doc_path:
     description: "文档目录"
@@ -11,7 +16,7 @@ inputs:
       - "{planning_artifacts}"
   template_file:
     description: "模板文件"
-    default: "../templates/arch/JL-Template-Analyze-Code.md"
+    default: "../templates/JL-Template-Analyze-Code.md"
   output_dir:
     default:
       - "{output_folder}/ship"

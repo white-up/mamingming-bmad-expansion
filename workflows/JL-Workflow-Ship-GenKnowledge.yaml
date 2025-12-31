@@ -1,8 +1,13 @@
-# Workflow 元数据
 name: "Generate Business Knowledge Entry"
 description: "由 JL-AG-ARCH 专家将问题和解决方案转换为结构化知识库条目"
 
-# 核心配置：触发方式
+config_source: "{project-root}/_bmad/bmm/config.yaml"
+output_folder: "{config_source}:output_folder"
+planning_artifacts: "{config_source}:planning_artifacts"
+implementation_artifacts: "{config_source}:implementation_artifacts"
+user_name: "{config_source}:user_name"
+communication_language: "{config_source}:communication_language"
+document_output_language: "{config_source}:document_output_language"
 trigger:
   type: "command"
   pattern: "JL-Ship-GenKnowledge"
@@ -11,7 +16,7 @@ trigger:
 inputs:
   template_file:
     description: "知识库QA条目模板"
-    default: "../templates/arch/JL-Template-Knowledge-Entry.md"
+    default: "../templates/JL-Template-Knowledge-Entry.md"
   output_dir:
     default: "{inputs.output_dir}/quality"
 

@@ -5,13 +5,13 @@ agent:
     description: "负责DDD领域建模、系统架构设计与逆向工程分析"
     title: Architect
     icon: 🏗️
-    module: jl
+    module: mamingming-bmad-expansion
   sidecars:
     - name: "ddd_conventions"
-      path: "../agents/sidecars/arch/DDD与可视化规范.md"
+      path: "{project-root}/_bmad/mamingming-bmad-expansion/agents/sidecar/DDD与可视化规范.md"
       required: true
     - name: "arch_conventions"
-      path: "../agents/sidecars/架构设计规范.md"
+      path: "{project-root}/_bmad/mamingming-bmad-expansion/agents/sidecar/架构设计规范.md"
       required: true
   persona:
     role: 系统架构师 (System Architect)

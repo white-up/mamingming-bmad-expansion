@@ -93,15 +93,15 @@ src
 
 ### 命名规范
 1. **类名**：PascalCase。
-   * 实现类后缀：`ServiceImpl`, `GatewayImpl`。
-   * 测试类后缀：`UserApiTest`。
+    * 实现类后缀：`ServiceImpl`, `GatewayImpl`。
+    * 测试类后缀：`UserApiTest`。
 2. **方法/变量**：camelCase。
-   * 返回布尔值的方法：以 `is`, `has`, `should` 开头。
+    * 返回布尔值的方法：以 `is`, `has`, `should` 开头。
 3. **常量**：UPPER_SNAKE_CASE。
 4. **包名**：全部小写，单数形式 (e.g., `com.jlpay.user` 而非 `users`)。
 5. **避免**：
-   * 禁止使用拼音或拼音首字母。
-   * 禁止无意义的缩写（如 `AbstractClass` 缩写为 `AbsCls`）。
+    * 禁止使用拼音或拼音首字母。
+    * 禁止无意义的缩写（如 `AbstractClass` 缩写为 `AbsCls`）。
 
 ## 对象模型与数据流转
 ### 对象定义
@@ -115,8 +115,8 @@ src
 ### 转换红线
 1. **严禁透传**：`PO` 对象绝对不能出现在 `Client` 层（接口返回值）或 `Application` 层（入参）。
 2. **强制转换**：必须在层与层之间进行对象转换。
-   * `Infrastructure` -> `Domain`: PO 转 model。
-   * `Application` -> `Infrastructure`: model 转 PO。
+    * `Infrastructure` -> `Domain`: PO 转 model。
+    * `Application` -> `Infrastructure`: model 转 PO。
 3. **转换工具**：推荐使用 **MapStruct** 或手写 Converter，避免逻辑中散落大量 setter/getter。
 
 ### 防腐层 (ACL)
@@ -140,7 +140,7 @@ src
 ### 复杂度控制
 
 1. **卫语句 (Guard Clauses)**：优先判断异常/退出条件并 return，减少 `else` 嵌套。
-   * *嵌套层数限制*：`if/else` 嵌套不得超过 3 层。
+    * *嵌套层数限制*：`if/else` 嵌套不得超过 3 层。
 2. **魔法值**：**严禁**在代码中直接使用未定义的数字或字符串（如 `if (status == 1)`），必须定义为常量或枚举。
 3. **大类拆分**：当一个类超过 500 行，或一个方法超过 50 行时，考虑重构（SRP 原则）。
 
@@ -150,29 +150,29 @@ src
 ### 异常处理
 1. **自定义异常**：业务层统一抛出 `BizException`，包含 `ErrorCode` 和 `ErrorMessage`。
 2. **吞异常**：**严禁**捕获异常后什么都不做，或只打印一行日志不处理（除非是明确的忽略逻辑）。
-   * *错误*：`catch (Exception e) { e.printStackTrace(); }`
-   * *正确*：`catch (Exception e) { log.error("...", e); throw new BizException(...); }`
+    * *错误*：`catch (Exception e) { e.printStackTrace(); }`
+    * *正确*：`catch (Exception e) { log.error("...", e); throw new BizException(...); }`
 
 ### 日志规约
 1. **工具**：统一使用 `SLF4J` 接口。
 2. **格式**：**禁止**字符串拼接，必须使用占位符。
-   * *正确*：`log.info("Order processed: {}", orderId);`
+    * *正确*：`log.info("Order processed: {}", orderId);`
 3. **级别**：
-   * `ERROR`：必须记录堆栈信息（`log.error("msg", e)`），用于系统故障。
-   * `WARN`：用于可预知的业务异常（如参数校验失败）。
-   * `INFO`：关键流程节点，保留上下文（OrderId, TraceId）。
-   * `DEBUG`：仅用于开发环境，生产环境禁止开启。
+    * `ERROR`：必须记录堆栈信息（`log.error("msg", e)`），用于系统故障。
+    * `WARN`：用于可预知的业务异常（如参数校验失败）。
+    * `INFO`：关键流程节点，保留上下文（OrderId, TraceId）。
+    * `DEBUG`：仅用于开发环境，生产环境禁止开启。
 4. **避坑**：禁止在循环中打印日志；禁止打印超大对象（如 Base64）。
 
 ## 数据库与事务规范
 1. **SQL 规范**：
-   * **禁止** `SELECT *`，必须显式列出所需字段。
-   * **禁止**在 SQL 中进行复杂的数学运算或逻辑判断。
+    * **禁止** `SELECT *`，必须显式列出所需字段。
+    * **禁止**在 SQL 中进行复杂的数学运算或逻辑判断。
 2. **事务 (Transaction)**：
-   * **粒度**：`@Transactional` 范围要尽可能小。
-   * **RPC 隔离**：**严禁**在事务方法内部进行 HTTP/RPC 远程调用（会导致数据库连接池被耗尽）。若必须调用，应在事务外执行，或通过消息队列解耦。
+    * **粒度**：`@Transactional` 范围要尽可能小。
+    * **RPC 隔离**：**严禁**在事务方法内部进行 HTTP/RPC 远程调用（会导致数据库连接池被耗尽）。若必须调用，应在事务外执行，或通过消息队列解耦。
 3. **N+1 问题**：
-   * 禁止在循环中执行数据库查询。必须改为批量查询 (`where id in (...)`) 或使用 Map 组装数据。
+    * 禁止在循环中执行数据库查询。必须改为批量查询 (`where id in (...)`) 或使用 Map 组装数据。
 
 ## 测试规范
 
@@ -181,8 +181,8 @@ src
 1. **范围**：重点覆盖 `Domain Service` 和 `Application Service` 中的复杂逻辑。`Controller` 和 `Repository` 简单方法可不测。
 2. **工具**：JUnit 5 + Mockito。
 3. **原则**：
-   * **AIR 原则**：Automatic (自动化), Independent (独立), Repeatable (可重复)。
-   * 不依赖 Spring 容器启动（速度快），外部依赖全部 Mock。
+    * **AIR 原则**：Automatic (自动化), Independent (独立), Repeatable (可重复)。
+    * 不依赖 Spring 容器启动（速度快），外部依赖全部 Mock。
 4. **结构**：Given (准备数据/Mock) -> When (执行调用) -> Then (断言结果/验证行为)。
 
 ### 命名与注释

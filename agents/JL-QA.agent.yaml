@@ -5,13 +5,13 @@ agent:
     description: "负责代码、文档审查和测试生成的质量专家"
     title: QA
     icon: 🕵️‍♂️
-    module: jl
+    module: mamingming-bmad-expansion
   sidecars:
     - name: "java_conventions"
-      path: "../agents/sidecars/Java编码规范.md"
+      path: "{project-root}/_bmad/mamingming-bmad-expansion/agents/sidecar/Java编码规范.md"
       required: true
     - name: "arch_conventions"
-      path: "../agents/sidecars/架构设计规范.md"
+      path: "{project-root}/_bmad/mamingming-bmad-expansion/agents/sidecar/架构设计规范.md"
       required: true
   persona:
     role: 质量保障专家 (Quality Assurance)

@@ -1,17 +1,20 @@
-# Workflow 元数据
 name: "DDD System Design"
 description: "由 JL-AG-ARCH 基于需求文档，进行 DDD 领域建模并输出详细设计文档"
+config_source: "{project-root}/_bmad/bmm/config.yaml"
+output_folder: "{config_source}:output_folder"
+planning_artifacts: "{config_source}:planning_artifacts"
+implementation_artifacts: "{config_source}:implementation_artifacts"
+user_name: "{config_source}:user_name"
+communication_language: "{config_source}:communication_language"
+document_output_language: "{config_source}:document_output_language"
 
-# 定义输入
 inputs:
   ddd_template_path:
     description: "DDD建模报告路径"
-    default:
-      - "../templates/arch/JL-Template-DDD-Design.md"
+    default: "../templates/JL-Template-DDD-Design.md"
   requirements_template_path:
     description: "产研统一需求设计文档模板路径"
-    default:
-      - "../templates/arch/JL-Template-Requirements-Design.md"
+    default: "../templates/JL-Template-Requirements-Design.md"
   req_path:
     description: "PRD 文档路径"
     default:

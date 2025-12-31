@@ -119,33 +119,22 @@ BMAD6 拓展模块 - 分布式系统研发与质量保障工具集
 mamingming-bmad-expansion/
 ├── agents/                         # AI专家定义
 │   ├── JL-ARCH.agent.yaml         # 架构专家 (JL-AG-ARCH)
+│   ├── JL-AG-ARCH-sidecar/        # 架构专家知识库 (遵循Expert Agent规范)
+│   │   ├── DDD与可视化规范.md
+│   │   └── 架构设计规范.md
 │   ├── JL-QA.agent.yaml           # 质量专家 (JL-AG-QA)
-│   └── sidecars/                  # 专家知识库
-│       ├── arch/                  # 架构相关规范文档
-│       │   ├── DDD与可视化规范.md
-│       │   └── 架构设计规范.md
-│       └── Java编码规范.md        # Java编码规范
+│   └── JL-AG-QA-sidecar/          # 质量专家知识库
+│       ├── Java编码规范.md
+│       └── 架构设计规范.md
 ├── templates/                      # 输出模板 (按领域分类)
-│   ├── arch/                      # 架构领域模板
-│   │   ├── JL-Template-Analyze-Code.md      # 代码分析报告模板
-│   │   ├── JL-Template-DDD-Design.md        # DDD建模报告模板
-│   │   ├── JL-Template-Knowledge-Entry.md   # 知识库条目模板
-│   │   └── JL-Template-Requirements-Design.md # 需求设计文档模板
-│   └── quality/                   # 质量领域模板
-│       ├── JL-Template-CR.md                 # 代码审查报告模板
-│       └── JL-Template-Scenario-Test-Case.md # 场景测试用例模板
-├── workflows/                      # 工作流定义 (按领域分类)
-│   ├── arch/                      # 架构领域工作流
-│   │   ├── JL-Workflow-Design-DDD.yaml         # DDD系统设计
-│   │   ├── JL-Workflow-Ship-AnalyzeCode.yaml   # 功能分析报告
-│   │   └── JL-Workflow-Ship-GenKnowledge.yaml  # 知识库条目生成
-│   └── quality/                   # 质量领域工作流
-│       ├── JL-Workflow-Build-GenTestSpec.yaml  # 场景测试用例生成
-│       └── JL-Workflow-Build-ReviewCode.yaml   # 代码审查
-├── docs/                          # 生成文档输出目录
-│   ├── designs/                   # 设计文档
-│   ├── knowledge/                 # 知识库条目
-│   └── specs/                     # 测试规格文档
+│   ├── arch/
+│   └── quality/
+├── workflows/                      # 工作流定义 (扁平化根目录)
+│   ├── JL-Workflow-Design-DDD.yaml
+│   ├── JL-Workflow-Ship-AnalyzeCode.yaml
+│   ├── JL-Workflow-Ship-GenKnowledge.yaml
+│   ├── JL-Workflow-Build-GenTestSpec.yaml
+│   └── JL-Workflow-Build-ReviewCode.yaml
 ├── module.yaml                    # 模块元数据定义
 └── README.md                      # 项目说明文档
 ```
