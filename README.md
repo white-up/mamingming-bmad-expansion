@@ -20,6 +20,131 @@ BMAD6 拓展模块 - 分布式系统研发与质量保障工具集
 2. **选择场景**: 根据您的研发阶段选择对应的快捷指令
 3. **执行操作**: 在代码编辑器中选中相关内容，输入对应指令即可
 
+## 安装指南
+### 安装BMAD6
+确保您的环境已安装BMAD6
+  ```bash
+  >npx bmad-method@alpha install
+  ? Installation directory: E:\EXAMPLE\project-root
+  
+  Resolved installation path: E:\EXAMPLE\project-root
+  Directory exists and contains 5 item(s)
+  ? Install to this directory? Yes
+  ? Select tools to configure: (Press <space> to select, <a> to toggle all, <i> to invert selection, and <enter> to proceed)
+  ? Select tools to configure: Cursor ⭐
+  ? Will you be installing any official BMad modules (BMad Method, BMad Builder, Creative Innovation Suite)? Yes
+  ? Select modules to install: BMB: BMad Builder - Agent, Workflow and Module Builder, BMM: BMad Method Agile-AI Driven-Development
+  ? Would you like to install a local custom module (this includes custom agents and workflows also)? No
+  
+  ? BMad™  Core Configuration
+  ? What shall the agents call you (TIP: Use a team name if using with a group)? Maxiangming
+  ? Preferred chat language/style? (English, Mandarin, English Pirate, etc...) 简体中文
+  ? Preferred document output language? 简体中文
+  ? Where should default output files be saved unless specified in other modules? _bmad-output
+  
+  ? BMad Optimized Builder (BoMB) Module Configuration
+  ? Accept Defaults (no to customize)? Yes
+  
+  ? BMad Method™: Breakthrough Method of Agile-Ai Driven-Dev
+  ? Accept Defaults (no to customize)? Yes
+  
+  
+  √ Core installed
+  √ Dependencies resolved
+  √ Module installed: bmb
+  √ Module installed: bmm
+  √ Module configurations generated
+  √ Manifests generated: 40 workflows, 13 agents, 5 tasks, 0 tools, 58 files
+  √ Configured: cursor
+  √ Module-specific installers completed
+  
+  ✨ BMAD is ready to use!
+  Installed to: E:\EXAMPLE\project-root\_bmad
+  Modules: bmb, bmm
+  
+  Thank you for helping test the early release version of the new BMad Core and BMad Method!
+  Stable Beta coming soon - please read the full README.md and linked documentation to get started!
+  ```
+#### Tip
+- 可参考[BMAD官网](https://github.com/bmad-code-org/BMAD-METHOD)安装 
+### 加载模块
+确保已安装好BMAD6，进行项目信息载入（若已使用BMAD，请跳过此步）
+```bash
+*workflow-init
+select  ...
+document-project
+select  ...
+```
+### 加载自定义模块
+  ```bash
+  >npx bmad-method@alpha install
+  ? Installation directory: E:\EXAMPLE\project-root
+
+  Resolved installation path: E:\EXAMPLE\project-root
+  Directory exists and contains 8 item(s) including existing BMAD installation (_bmad)
+  ? Install to this directory? Yes
+  ? What would you like to do? (Use arrow keys)
+  ? What would you like to do? Modify BMAD Installation
+    Found existing modules: core, bmb, bmm
+  ? Modify official module selection (BMad Method, BMad Builder, Creative Innovation Suite)? Yes
+  ? Select modules to install: BMB: BMad Builder - Agent, Workflow and Module Builder, BMM: BMad Method Agile-AI Driven-Development
+  
+  ? Modify custom module selection (add, update, or remove custom modules/agents/workflows)? Yes
+  
+  ⚙️  Custom Modules
+  No custom modules currently installed.
+  ? Would you like to add custom modules? Add new custom modules
+  ? Enter the path to your custom content folder (or press Enter to cancel): E:\service\mamingming-bmad-expansion
+  ✓ Confirmed local custom module: JL R&D Expansion Module
+  ? Would you like to: Continue with installation
+  ? Install 1 custom module(s) now? (Y/n) Y
+  ? Install 1 custom module(s) now? Yes
+  ? Select tools to configure: Cursor ✅
+  
+  ? BMad™  Core Configuration
+  ? What shall the agents call you (TIP: Use a team name if using with a group)? (current: Maxiangming) Maxiangming
+  ? Preferred chat language/style? (English, Mandarin, English Pirate, etc...) (current: 简体中文) 简体中文
+  ? Preferred document output language? (current: 简体中文) 简体中文
+  ? Where should default output files be saved unless specified in other modules? (current: _bmad-output) _bmad-output
+  
+  ? BMad Optimized Builder (BoMB) Module Configuration
+  ? Accept Defaults (no to customize)? Yes
+  
+  ? BMad Method™: Breakthrough Method of Agile-Ai Driven-Dev
+  ? Accept Defaults (no to customize)? Yes
+    ✓ MAMINGMING-BMAD-EXPANSION module configured
+  √ Backed up 13 custom files
+  
+  Keeping existing configuration for: cursor
+  √ Custom modules cached
+  √ Core installed
+  √ Dependencies resolved
+  √ Module installed: bmb
+  √ Module installed: bmm
+  √ Module installed: mamingming-bmad-expansion
+  √ Module configurations generated
+  √ Manifests generated: 45 workflows, 15 agents, 5 tasks, 0 tools, 65 files
+  √ Configured: cursor
+  √ Module-specific installers completed
+  √ Restored 13 custom files
+  
+  📁 Custom files preserved: 13
+  
+  ✨ BMAD is ready to use!
+  Installed to: E:\EXAMPLE\project-root\_bmad
+  Modules: bmb, bmm, mamingming-bmad-expansion
+  
+  Thank you for helping test the early release version of the new BMad Core and BMad Method!
+  Stable Beta coming soon - please read the full README.md and linked documentation to get started!
+  ```
+#### Tips
+- 如何验证模块是否安装成功: 查看目标文件（如.cursor），查看是否包含自定义目录名称，以及其中workflows以及agents是否包含文件
+### 使用功能
+参考下文定义的快捷指令调用具体功能
+```shell
+JL-Build-ReviewCode
+```
+
 ## 功能模块 (Modules)
 
 ### 快捷指令汇总
