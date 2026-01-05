@@ -93,22 +93,20 @@
 
 <action>更新状态文件:
 - 添加到 completed_phases: {"phase": "knowledge_supplement", "status": "completed", "timestamp": "{{now}}", "output": "Architecture_Knowledge_Guide_{{timestamp}}.md"}
-- 更新 current_phase = "completed"
-- 更新 timestamps.completed = "{{now}}"
 </action>
 
 <output>**✓ 知识指南已保存**
 
 文件位置: {inputs.output_dir}/Architecture_Knowledge_Guide_{{timestamp}}.md
 
-**🎉 全流程圆满结束！**
+**✓ 知识补充阶段已完成。**
 
 您现在拥有了：
 1. **产研统一设计文档** (Requirements Design)
 2. **DDD 建模报告** (DDD Design)
 3. **架构决策与领域知识指南** (Knowledge Guide)
 
-这是构建高质量分布式系统的坚实基础。</output>
+接下来即将进入 TDD 代码实现阶段。</output>
 
 <action>设置 knowledge_supplement_completed = true</action>
 <action>返回主工作流路由器完成流程</action>

@@ -255,19 +255,17 @@ com.jlpay.order
 
   <action>更新状态文件:
   - 添加到 completed_phases: {"phase": "ddd_modeling", "status": "completed", "timestamp": "{{now}}", "output": "DDD_Design_{{timestamp}}.md"}
-  - 更新 current_phase = "completed"
-  - 更新 timestamps.completed = "{{now}}"
   </action>
 
   <output>**✓ DDD 建模报告已保存**
   
   文件位置: {inputs.output_dir}/DDD_Design_{{timestamp}}.md
   
-  **🎉 恭喜！DDD 系统设计工作流全部完成。**
+  **✓ DDD 建模阶段已完成。**
   
-  后续您可以：
-  1. 使用 IDE 插件基于 PlantUML/Mermaid 生成代码骨架
-  2. 使用 `JL-Build-ReviewCode` 审查后续实现代码
+  后续我们将进行：
+  1. 知识补充与架构复盘
+  2. TDD 代码实现
   </output>
 
   <action>设置 ddd_modeling_completed = true</action>
