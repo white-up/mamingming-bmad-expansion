@@ -77,6 +77,14 @@
     <check if="current_phase == ddd_modeling">
       <action>加载并执行: {installed_path}/workflows/ddd-modeling-instructions.md 带恢复上下文</action>
     </check>
+
+    <check if="current_phase == knowledge_supplement">
+      <action>加载并执行: {installed_path}/workflows/knowledge-supplement-instructions.md 带恢复上下文</action>
+    </check>
+
+    <check if="current_phase == tdd_implementation">
+      <action>加载并执行: {installed_path}/workflows/tdd-implementation-instructions.md 带恢复上下文</action>
+    </check>
   </check>
 
   <check if="用户选择 2">
@@ -263,11 +271,86 @@
 
 </step>
 
-<step n="7" goal="完成并提供后续步骤">
+<step n="7" goal="完成 DDD 建模后转入知识补充">
 
 <check if="ddd_modeling_completed == true">
   <action>更新状态文件:
   - 添加到 completed_phases: {"phase": "ddd_modeling", "status": "completed", "timestamp": "{{now}}", "output": "{{ddd_doc_path}}"}
+  - 更新 current_phase = "knowledge_supplement"
+  - 更新 timestamps.completed = "{{now}}"
+  </action>
+
+  <output>
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ✓ DDD 领域建模已完成
+  
+  我们即将进入 **知识补充与深度复盘** 阶段。
+  
+  在此阶段，我将切换为“资深架构师导师”，为您生成《架构决策与领域知识指南》，内容包括：
+  1. 设计辩护：为什么要这么建模？
+  2. 行业雷达：行业内的“暗知识”和避坑指南
+  3. 拓展进阶：技术落地建议和未来演进预测
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  </output>
+
+  <ask>准备好开始知识补充了吗？[y/n]</ask>
+
+  <check if="y">
+    <action>加载并执行: {installed_path}/workflows/knowledge-supplement-instructions.md</action>
+  </check>
+  
+  <check if="n">
+    <action>显示: "工作流暂停。您可以稍后通过恢复模式生成知识指南。"</action>
+    <action>退出工作流</action>
+  </check>
+</check>
+
+</step>
+
+<step n="8" goal="完成知识补充后转入 TDD 代码实现">
+
+<check if="knowledge_supplement_completed == true">
+  <action>更新状态文件:
+  - 添加到 completed_phases: {"phase": "knowledge_supplement", "status": "completed", "timestamp": "{{now}}"}
+  - 更新 current_phase = "tdd_implementation"
+  - 更新 timestamps.completed = "{{now}}"
+  </action>
+
+  <output>
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ✓ 知识补充与复盘已完成
+  
+  我们即将进入最后一个阶段：**TDD 代码实现**。
+  
+  在此阶段，我将作为您的 TDD 结对伙伴，按照 Red-Green-Refactor 流程：
+  1. 定义契约 (Contract)
+  2. 编写测试 (Red)
+  3. 最小化实现 (Green)
+  4. 规范检查 (Refactor)
+  
+  目标是生成符合 Clean Architecture 的核心代码骨架。
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  </output>
+
+  <ask>准备好开始 TDD 编码了吗？[y/n]</ask>
+
+  <check if="y">
+    <action>加载并执行: {installed_path}/workflows/tdd-implementation-instructions.md</action>
+  </check>
+  
+  <check if="n">
+    <action>显示: "工作流暂停。您可以稍后通过恢复模式生成代码。"</action>
+    <action>退出工作流</action>
+  </check>
+</check>
+
+</step>
+
+<step n="9" goal="完成并提供后续步骤">
+
+<check if="tdd_implementation_completed == true">
+  <action>更新状态文件:
+  - 添加到 completed_phases: {"phase": "tdd_implementation", "status": "completed", "timestamp": "{{now}}"}
   - 更新 current_phase = "completed"
   - 更新 timestamps.completed = "{{now}}"
   </action>
@@ -303,8 +386,8 @@
 
 1. 审阅产研统一设计文档，确保业务逻辑正确
 2. 检查 DDD 建模报告中的领域模型是否准确反映业务
-3. 与产品团队确认边界定义和验收标准
-4. 进入代码实现阶段时，参考 DDD 建模报告中的类图和目录结构
+3. 阅读《架构决策与领域知识指南》，理解设计背后的权衡
+4. 将生成的 TDD 代码骨架导入 IDE，开始具体实现
 
 **相关工作流:**
 - `JL-Build-Scenario-Test-Case` - 生成测试规格
