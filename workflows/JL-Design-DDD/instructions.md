@@ -197,8 +197,31 @@
   - 更新 last_updated 时间戳
   </action>
   
-  <action>显示: "✓ 产研统一设计完成！开始事件风暴..."</action>
-  <action>加载并执行: {installed_path}/workflows/event-storming-instructions.md</action>
+  <output>
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ✓ 产研统一设计已完成
+  
+  我们即将进入 **事件风暴建模** 阶段。
+  
+  在此阶段，我们将：
+  1. 识别领域事件、命令和聚合
+  2. 绘制事件风暴图
+  3. 识别业务热点和设计建议
+  
+  这是一个**高交互性**的过程，需要您的持续确认。
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  </output>
+
+  <ask>准备好开始事件风暴了吗？[y/n]</ask>
+  
+  <check if="y">
+    <action>加载并执行: {installed_path}/workflows/event-storming-instructions.md</action>
+  </check>
+  
+  <check if="n">
+    <action>显示: "工作流暂停。您可以通过 'JL-Design-DDD' 命令并在选择恢复模式来继续。"</action>
+    <action>退出工作流</action>
+  </check>
 </check>
 
 </step>
@@ -212,8 +235,30 @@
   - 更新 last_updated 时间戳
   </action>
   
-  <action>显示: "✓ 事件风暴完成！开始 DDD 领域建模..."</action>
-  <action>加载并执行: {installed_path}/workflows/ddd-modeling-instructions.md</action>
+  <output>
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ✓ 事件风暴建模已完成
+  
+  我们即将进入 **DDD 领域建模** 阶段。
+  
+  在此阶段，我们将：
+  1. 细化限界上下文
+  2. 设计聚合根、实体和值对象
+  3. 生成详细的类图和架构图
+  4. 完成最终的 DDD 建模报告
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  </output>
+
+  <ask>准备好开始 DDD 建模了吗？[y/n]</ask>
+
+  <check if="y">
+    <action>加载并执行: {installed_path}/workflows/ddd-modeling-instructions.md</action>
+  </check>
+  
+  <check if="n">
+    <action>显示: "工作流暂停。您可以通过恢复模式继续。"</action>
+    <action>退出工作流</action>
+  </check>
 </check>
 
 </step>
@@ -262,8 +307,8 @@
 4. 进入代码实现阶段时，参考 DDD 建模报告中的类图和目录结构
 
 **相关工作流:**
-- `JL-Workflow-Build-GenTestSpec` - 生成测试规格
-- `JL-Workflow-Build-ReviewCode` - 代码评审
+- `JL-Build-Scenario-Test-Case` - 生成测试规格
+- `JL-Build-ReviewCode` - 代码评审
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 </output>

@@ -5,6 +5,7 @@
 <critical>此工作流执行产研统一设计文档生成（阶段 1）</critical>
 <critical>调用者: ../JL-Design-DDD/instructions.md 路由器</critical>
 <critical>处理: requirements_design 阶段</critical>
+<critical>原则: 每一步必须等待用户确认后才能进入下一步。严禁一次性生成所有内容。</critical>
 
 <step n="1.1" goal="加载上下文资源">
 
@@ -69,219 +70,176 @@
 
 </step>
 
-<step n="1.3" goal="生成数据字典和业务规则">
-<critical>优先提取数据字典和业务规则，这是后续所有内容的基础</critical>
+<step n="1.3" goal="生成数据字典">
+<critical>优先提取数据字典，这是后续所有内容的基础</critical>
 
 <action>从需求文档中提取所有业务和技术术语</action>
-<action>创建数据字典：
-| 术语 | 含义 | 属性名称 |
-|-----|------|---------|
+<action>创建数据字典，使用 Markdown 表格展示：
+| 术语 | 含义 | 属性名称 | 备注 |
+|-----|------|---------|-----|
 </action>
 
-<action>提取所有业务规则并分类汇总：
-| 相关功能 | 业务规则 | 描述 |
-|---------|---------|-----|
-</action>
+<output>**步骤 1/5: 数据字典确认**
 
-<output>**数据字典和业务规则草稿 ✓**
+为了确保术语一致性，我提取了以下关键术语：
 
-**数据字典** ({{term_count}} 个术语):
-{{data_dictionary_preview}}
+{{data_dictionary_table}}
 
-**业务规则** ({{rule_count}} 条规则):
-{{business_rules_preview}}
+请确认：
+1. 术语定义是否准确？
+2. 是否有遗漏的关键概念？
 
-请审核并确认，或提出修改意见：</output>
+[确认通过 / 修改意见]</output>
 
 <action>等待用户确认</action>
 
-<check if="用户有修改意见">
-  <action>根据反馈更新数据字典和业务规则</action>
-  <action>重新展示更新后的内容</action>
-</check>
+<loop while="用户有修改意见">
+  <action>根据反馈更新数据字典</action>
+  <output>**更新后的数据字典**... 是否确认？[y/继续修改]</output>
+  <action>等待用户确认</action>
+</loop>
 
 </step>
 
-<step n="1.4" goal="生成基本信息和需求细化">
+<step n="1.4" goal="生成业务规则">
 
-<action>基于数据字典和业务规则，生成产研设计文档的以下部分：
+<action>提取所有业务规则并分类汇总</action>
+<action>使用 Markdown 表格展示，按功能模块分组：
 
-## 基本信息（快速对齐核心）
-- 业务背景
-- 核心诉求（使用「动词+对象+目标」格式）
-- 边界定义（In-Scope / Out-of-Scope）
-- 依赖条件
-- 利益攸关者分析
-- 数据字典（来自步骤 1.3）
-
-## 需求细化
-### 业务流程细化
-- 主业务流程（使用 Mermaid 绘制流程图和时序图）
-- 分支业务流程
-
-### 功能清单
-- 功能点描述表格
-
-### 用户故事梳理
-- 用户故事列表
-
-### 业务信息汇总
-- 业务规则汇总（来自步骤 1.3）
-- 关键业务信息
+### 模块 A
+| 规则ID | 规则名称 | 描述 | 约束条件 |
+|-------|---------|-----|---------|
 </action>
 
-<critical>所有后续内容必须引用数据字典中的术语，保持一致性</critical>
+<output>**步骤 2/5: 业务规则确认**
 
-<output>**需求细化文档草稿 ✓**
+我识别了以下核心业务规则：
 
-已生成以下内容：
-- 基本信息部分
-- 主业务流程图
-- 主业务时序图
-- 分支流程表
-- 功能清单
-- 用户故事
+{{business_rules_tables}}
 
-请审核关键内容：
+请确认规则是否完整且无歧义？[确认通过 / 修改意见]</output>
 
-**核心诉求**: {{core_demand}}
+<action>等待用户确认</action>
+
+<loop while="用户有修改意见">
+  <action>根据反馈更新业务规则</action>
+  <output>**更新后的业务规则**... 是否确认？[y/继续修改]</output>
+  <action>等待用户确认</action>
+</loop>
+
+</step>
+
+<step n="1.5" goal="可视化业务流程">
+<critical>必须使用 Mermaid 生成清晰的流程图</critical>
+
+<action>绘制主业务流程图 (Mermaid flowchart TD)</action>
+<action>绘制关键状态流转图 (Mermaid stateDiagram-v2)</action>
+<action>绘制核心交互时序图 (Mermaid sequenceDiagram)</action>
+
+<output>**步骤 3/5: 业务流程可视化**
 
 **主业务流程图**:
 ```mermaid
 {{main_flow_diagram}}
 ```
 
-**功能清单预览**:
-{{feature_list_preview}}
+**关键实体状态流转**:
+```mermaid
+{{state_diagram}}
+```
 
-是否需要修改？[y/n/具体修改意见]</output>
+**核心场景时序图**:
+```mermaid
+{{sequence_diagram}}
+```
 
-<action>等待用户审核</action>
+请检查图表逻辑是否正确反映了业务流转？[确认通过 / 修改图表]</output>
 
-<check if="用户有修改意见">
-  <action>根据反馈修改相应内容</action>
-  <action>重新展示更新后的部分</action>
-</check>
+<action>等待用户确认</action>
+
+<loop while="用户要求修改">
+  <action>根据反馈调整 Mermaid 代码</action>
+  <output>**更新后的图表**...
+  ```mermaid
+  {{updated_diagram}}
+  ```
+  是否满意？[y/继续修改]</output>
+  <action>等待用户确认</action>
+</loop>
 
 </step>
 
-<step n="1.5" goal="分析现有代码覆盖情况">
+<step n="1.6" goal="系统架构与上下文 (C4)">
 
-<action>检查是否有现有代码可供分析</action>
+<action>分析系统上下文，绘制 C4 Context 图</action>
+<action>分析容器结构，绘制 C4 Container 图</action>
 
-<check if="存在相关代码路径">
-  <action>扫描代码库，分析现有实现</action>
-  <action>生成功能实现部分：
-  
-## 功能实现
-### 当前系统架构
-- 系统上下文（使用 C4 模型图）
+<output>**步骤 4/5: 系统架构视图 (C4)**
 
-### 代码对需求的覆盖情况
-- 已实现功能
-- 未实现功能
-
-### 关键功能实现方案
-- 功能实现方案
-- 数据库设计
-
-### 代码可维护性与扩展性分析
-- 代码结构
-- 可维护性问题
-- 扩展性建议
-  </action>
-</check>
-
-<check if="无现有代码">
-  <action>生成功能实现框架部分：
-
-## 功能实现
-### 当前系统架构
-- 系统上下文（待实现，使用 C4 模型图）
-
-### 关键功能实现方案
-- 功能实现方案（初步设计）
-- 数据库设计（初步设计）
-  </action>
-</check>
-
-<output>**功能实现分析完成 ✓**
-
-{{#if has_existing_code}}
-**代码覆盖分析**:
-- 已实现: {{implemented_features_count}} 个功能
-- 未实现: {{unimplemented_features_count}} 个功能
-{{else}}
-**注**: 无现有代码，已生成初步实现框架
-{{/if}}
-
-**系统上下文图**:
+**System Context (系统上下文)**:
 ```mermaid
 {{c4_context_diagram}}
 ```
 
-是否继续？[y/n]</output>
+**Container (容器视图)**:
+```mermaid
+{{c4_container_diagram}}
+```
+
+请确认系统边界和外部依赖关系是否准确？[确认通过 / 修改架构]</output>
+
+<action>等待用户确认</action>
+
+<loop while="用户要求修改">
+  <action>调整 C4 图表</action>
+  <output>**更新后的架构图**... 是否确认？[y/继续修改]</output>
+  <action>等待用户确认</action>
+</loop>
 
 </step>
 
-<step n="1.6" goal="整合并输出完整文档">
+<step n="1.7" goal="生成并保存完整文档">
 
-<action>将所有部分整合为完整的产研统一设计文档</action>
+<action>整合数据字典、业务规则、图表、功能清单生成完整文档</action>
 <action>执行自我审阅（Post-Check）：
-- 检查是否符合模板的所有二级和三级标题
-- 检查术语一致性
-- 检查 Mermaid 图表语法正确性
-- 验证精简准确的目标
+- 检查 Mermaid 图表语法
+- 检查图文一致性
+- 检查文档结构完整性
 </action>
 
-<action>生成完整文档内容，以"# 产研通用需求设计报告"作为开头</action>
+<output>**步骤 5/5: 文档生成与保存**
 
-<output>**产研统一设计文档生成完成 ✓**
+产研统一设计文档已整合完毕。
 
-文档结构预览：
+**文档结构预览**:
 {{document_structure_preview}}
 
-**自我审阅结果**:
-- 标题结构: {{structure_check}}
-- 术语一致性: {{terminology_check}}
-- 图表语法: {{diagram_check}}
+**包含图表**:
+- 流程图: {{flowchart_count}}
+- 状态图: {{state_diagram_count}}
+- 时序图: {{sequence_diagram_count}}
+- C4架构图: 2
 
 准备保存文档。确认保存？[y/n]</output>
 
-</step>
+<action>等待用户确认</action>
 
-<step n="1.7" goal="保存文档并更新状态">
+<check if="用户确认">
+  <action>生成时间戳: {{timestamp}}</action>
+  <action>保存文档到: {inputs.output_dir}/Requirements_Design_{{timestamp}}.md</action>
+  <action>验证文档保存成功</action>
 
-<action>生成时间戳: {{timestamp}}</action>
-<action>保存文档到: {inputs.output_dir}/Requirements_Design_{{timestamp}}.md</action>
-<action>验证文档保存成功</action>
+  <action>更新状态文件:
+  - 添加到 completed_phases: {"phase": "requirements_design_doc", "status": "completed", "timestamp": "{{now}}", "output": "Requirements_Design_{{timestamp}}.md"}
+  - 更新 last_updated 时间戳
+  </action>
 
-<action>更新状态文件:
-- 添加到 completed_phases: {"phase": "requirements_design_doc", "status": "completed", "timestamp": "{{now}}", "output": "Requirements_Design_{{timestamp}}.md"}
-- 更新 findings.requirements_summary 为高级摘要
-- 更新 last_updated 时间戳
-</action>
+  <output>**✓ 产研统一设计文档已保存**
+  
+  文件位置: {inputs.output_dir}/Requirements_Design_{{timestamp}}.md
+  
+  即将进入事件风暴阶段。</output>
 
-<output>**✓ 产研统一设计文档已保存**
-
-**文件位置**: {inputs.output_dir}/Requirements_Design_{{timestamp}}.md
-
-**文档摘要**:
-- 功能点数量: {{feature_count}}
-- 用户故事数量: {{story_count}}
-- 业务规则数量: {{rule_count}}
-
-是否需要修改文档？[y/修改意见/继续]</output>
-
-<action>等待用户最终确认</action>
-
-<check if="用户要求修改">
-  <action>根据反馈修改文档</action>
-  <action>重新保存文档（覆盖原文件）</action>
-  <action>重新展示确认信息</action>
-</check>
-
-<check if="用户确认继续">
   <action>设置 requirements_design_completed = true</action>
   <action>返回主工作流路由器继续下一阶段</action>
 </check>

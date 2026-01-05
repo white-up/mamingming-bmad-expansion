@@ -39,6 +39,14 @@
 
 准备开始事件风暴。请确认开始？[y/n]</output>
 
+<action>等待用户确认</action>
+<check if="用户确认">
+  <action>继续到步骤 2.2</action>
+</check>
+<check if="用户取消">
+  <action>退出工作流</action>
+</check>
+
 </step>
 
 <step n="2.2" goal="识别领域事件">
@@ -66,10 +74,19 @@
 
 <action>等待用户反馈</action>
 
-<check if="用户提供反馈">
+<loop while="用户有修改意见">
   <action>根据反馈调整领域事件列表</action>
-  <action>记录调整原因</action>
-</check>
+  <output>**更新后的领域事件列表**:
+  
+  {{#each domain_events}}
+  - {{event_name}} ({{description}})
+  {{/each}}
+  
+  是否确认？[y/继续修改]</output>
+  <action>等待用户确认</action>
+</loop>
+
+<action>存储确认的领域事件列表</action>
 
 </step>
 
@@ -101,6 +118,14 @@
 请提供您的反馈：</output>
 
 <action>等待用户反馈</action>
+
+<loop while="用户有修改意见">
+  <action>根据反馈调整命令列表</action>
+  <output>**更新后的命令列表**... 是否确认？[y/继续修改]</output>
+  <action>等待用户确认</action>
+</loop>
+
+<action>存储确认的命令列表</action>
 
 </step>
 
@@ -142,6 +167,12 @@
 
 <action>等待用户反馈</action>
 
+<loop while="用户有修改意见">
+  <action>调整聚合和外部系统</action>
+  <output>**更新后的聚合列表**... 是否确认？[y/继续修改]</output>
+  <action>等待用户确认</action>
+</loop>
+
 </step>
 
 <step n="2.5" goal="识别业务规则和热点">
@@ -175,6 +206,12 @@
 
 <action>等待用户反馈</action>
 
+<loop while="用户有修改意见">
+  <action>调整业务规则和热点</action>
+  <output>**更新后的规则和热点**... 是否确认？[y/继续修改]</output>
+  <action>等待用户确认</action>
+</loop>
+
 </step>
 
 <step n="2.6" goal="绘制事件风暴图">
@@ -190,6 +227,8 @@
 </action>
 
 <output>**事件风暴图 🎨**
+
+我已生成 Mermaid 事件风暴图代码。
 
 ```mermaid
 {{event_storming_diagram}}
@@ -207,73 +246,41 @@
 2. 元素之间的连接是否准确？
 3. 是否需要调整布局？
 
-请提供您的反馈：</output>
+请仔细检查图表，如有任何问题请告诉我。</output>
 
 <action>等待用户反馈</action>
 
-<check if="用户要求修改">
+<loop while="用户要求修改">
   <action>根据反馈修改图表</action>
-  <action>重新展示更新后的图表</action>
-  <action>继续迭代直到用户满意</action>
-</check>
+  <output>**更新后的事件风暴图**
+  
+  ```mermaid
+  {{updated_diagram}}
+  ```
+  
+  是否满意？[y/继续修改]</output>
+  <action>等待用户确认</action>
+</loop>
+
+<output>**✓ 事件风暴图已确认**</output>
 
 </step>
 
-<step n="2.7" goal="生成元素清单">
+<step n="2.7" goal="生成元素清单和设计建议">
 
 <action>整理所有识别的元素，生成结构化清单</action>
-
-<output>**事件风暴元素清单 📋**
-
-### 领域事件列表
-{{#each domain_events}}
-| 序号 | 事件名称 | 描述 | 触发时机 |
-|-----|---------|-----|---------|
-| {{@index + 1}} | {{name}} | {{description}} | {{timing}} |
-{{/each}}
-
-### 命令列表
-{{#each commands}}
-| 序号 | 命令名称 | 来源 | 触发事件 |
-|-----|---------|-----|---------|
-| {{@index + 1}} | {{name}} | {{source}} | {{triggers}} |
-{{/each}}
-
-### 聚合列表
-{{#each aggregates}}
-| 序号 | 聚合名称 | 包含实体 | 相关事件 |
-|-----|---------|---------|---------|
-| {{@index + 1}} | {{name}} | {{entities}} | {{events}} |
-{{/each}}
-
-### 外部系统列表
-{{#each external_systems}}
-| 序号 | 系统名称 | 类型 | 交互方式 |
-|-----|---------|-----|---------|
-| {{@index + 1}} | {{name}} | {{type}} | {{interaction}} |
-{{/each}}
-
-### 业务规则列表
-{{business_rules_table}}
-
-### 潜在热点问题
-{{hotspots_table}}
-
-请确认元素清单的完整性：</output>
-
-</step>
-
-<step n="2.8" goal="生成设计建议">
-
 <action>基于事件风暴结果，生成初步设计建议</action>
 
-<output>**设计建议 💡**
+<output>**事件风暴总结与建议 💡**
 
+**元素统计**:
+- 事件: {{event_count}}
+- 命令: {{command_count}}
+- 聚合: {{aggregate_count}}
+
+**设计建议**:
 ### 聚合设计建议
 {{aggregate_design_suggestions}}
-
-### 事件设计建议
-{{event_design_suggestions}}
 
 ### 架构改进建议
 {{architecture_suggestions}}
@@ -281,13 +288,17 @@
 ### 潜在风险提醒
 {{risk_reminders}}
 
-是否同意这些建议？[y/n/修改意见]</output>
+是否同意这些建议？这将被写入 DDD 建模报告中。[y/修改意见]</output>
 
 <action>等待用户确认</action>
 
+<check if="用户有修改意见">
+  <action>根据反馈调整建议</action>
+</check>
+
 </step>
 
-<step n="2.9" goal="保存事件风暴结果">
+<step n="2.8" goal="保存事件风暴结果">
 
 <action>整合所有内容，生成 DDD 建模报告（部分）</action>
 <action>报告内容截止到「设计建议」章节</action>
@@ -317,18 +328,10 @@
 - 聚合: {{aggregate_count}} 个
 - 业务规则: {{rule_count}} 条
 
-准备进入 DDD 领域建模阶段？[y/n/修改]</output>
+准备进入 DDD 领域建模阶段（细化类图和架构）。</output>
 
-<action>等待用户确认</action>
-
-<check if="用户要求修改">
-  <action>返回相应步骤进行修改</action>
-</check>
-
-<check if="用户确认继续">
-  <action>设置 event_storming_completed = true</action>
-  <action>返回主工作流路由器继续下一阶段</action>
-</check>
+<action>设置 event_storming_completed = true</action>
+<action>返回主工作流路由器继续下一阶段</action>
 
 </step>
 
