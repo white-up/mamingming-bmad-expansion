@@ -171,19 +171,38 @@
 
 <step n="1.6" goal="系统架构与上下文 (C4)">
 
-<action>分析系统上下文，绘制 C4 Context 图</action>
-<action>分析容器结构，绘制 C4 Container 图</action>
+<action>分析系统上下文，绘制 C4 Context 图（必须使用 Mermaid C4Context 语法）</action>
+<action>分析容器结构，绘制 C4 Container 图（必须使用 Mermaid C4Container 语法）</action>
 
 <output>**步骤 4/5: 系统架构视图 (C4)**
 
 **System Context (系统上下文)**:
 ```mermaid
-{{c4_context_diagram}}
+C4Context
+      title System Context diagram for {{system_name}}
+      Enterprise_Boundary(b0, "EnterpriseBoundary") {
+        Person(customerA, "User", "A user of the system.")
+        System(SystemAA, "{{system_name}}", "The core system.")
+        
+        System_Ext(SystemE, "External System", "External dependency.")
+
+        BiRel(customerA, SystemAA, "Uses")
+        Rel(SystemAA, SystemE, "Uses")
+      }
+      UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")
 ```
 
 **Container (容器视图)**:
 ```mermaid
-{{c4_container_diagram}}
+C4Container
+    title Container diagram for {{system_name}}
+    
+    System_Boundary(b1, "{{system_name}}") {
+        Container(api, "API Application", "Java, Spring Boot", "Handles business logic.")
+        ContainerDb(db, "Database", "MySQL", "Stores data.")
+        
+        Rel(api, db, "Reads/Writes", "JDBC")
+    }
 ```
 
 请确认系统边界和外部依赖关系是否准确？[确认通过 / 修改架构]</output>

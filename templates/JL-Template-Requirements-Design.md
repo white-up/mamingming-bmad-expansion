@@ -37,6 +37,40 @@
 ### 当前系统架构
 - 系统上下文[**必须** 使用 Mermaid 语法绘制 C4mod图]
 
+#### C4 Context Diagram
+```mermaid
+C4Context
+    title System Context diagram for {{system_name}}
+    
+    Enterprise_Boundary(b0, "EnterpriseBoundary") {
+        Person(user, "User", "A user of the system.")
+        System(system, "{{system_name}}", "The target system.")
+        
+        System_Ext(mail, "E-mail System", "The internal Microsoft Exchange e-mail system.")
+        
+        BiRel(user, system, "Uses")
+        Rel(system, mail, "Sends e-mails", "SMTP")
+    }
+    
+    UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")
+```
+
+#### C4 Container Diagram
+```mermaid
+C4Container
+    title Container diagram for {{system_name}}
+
+    System_Boundary(c1, "{{system_name}}") {
+        Container(web_app, "Web Application", "Java, Spring MVC", "Delivers the static content and the Internet banking SPA.")
+        Container(spa, "Single-Page App", "JavaScript, Angular", "Provides all the Internet banking functionality to customers via their web browser.")
+        ContainerDb(database, "Database", "Oracle Database Schema", "Stores user registration information, hashed auth credentials, etc.")
+        
+        Rel(web_app, spa, "Delivers")
+        Rel(spa, web_app, "Uses", "JSON/HTTPS")
+        Rel(web_app, database, "Reads from and writes to", "JDBC")
+    }
+```
+
 ### 代码对需求的覆盖情况
 - 已实现功能：[分析现有代码已实现的需求功能，对应到具体的代码模块或类，如UserController类实现了用户注册和登录功能]
 - 未实现功能：[指出原始需求中哪些功能现有代码尚未实现，如支付功能仅实现了前端页面，后端支付接口尚未开发]

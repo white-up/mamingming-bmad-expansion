@@ -1,0 +1,48 @@
+# 遗留系统现代化迁移工作流配置
+name: "JL-System-Migration"
+version: "1.0.0"
+description: "由 JL-ARCH 和 JL-QA 协作，执行遗留系统的现代化迁移（Java 8->17, COLA架构），确保业务逻辑零偏差"
+author: "JL"
+
+# 关键变量配置
+config_source: "{project-root}/_bmad/bmm/config.yaml"
+output_folder: "{config_source}:output_folder"
+user_name: "{config_source}:user_name"
+communication_language: "{config_source}:communication_language"
+date: system-generated
+
+# 模块路径
+installed_path: "{project-root}/_bmad/bmm/workflows/JL-System-Migration"
+instructions: "{installed_path}/instructions.md"
+validation: "{installed_path}/checklist.md"
+
+# 模板文件
+templates:
+  migration_context: "{project-root}/_bmad/bmm/templates/JL-Template-Migration-Context.md"
+  scenario_test: "{project-root}/_bmad/bmm/templates/JL-Template-Scenario-Test-Case.md"
+
+# 输入配置
+inputs:
+  source_dir:
+    description: "遗留系统源码根目录"
+    default: "{project-root}"
+  target_module:
+    description: "新系统/模块的名称（影子系统）"
+    default: "modernized-core"
+  output_dir:
+    description: "迁移产物输出目录"
+    default: "{output_folder}/migration"
+
+# 核心配置：触发方式
+trigger:
+  type: "command"
+  pattern: "JL-System-Migration"
+
+# 工作流模式
+modes:
+  - id: "full_migration"
+    name: "完整迁移流程"
+    description: "从边界分析到 E2E 验证的完整迁移"
+  - id: "resume"
+    name: "恢复迁移"
+    description: "从上次中断的步骤继续"
