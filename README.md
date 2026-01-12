@@ -155,6 +155,7 @@ JL-Build-ReviewCode
 | **代码逆向分析** | `JL-Ship-AnalyzeCode` | 对Java代码进行深度逆向分析，生成功能分析报告 | 代码理解、重构规划、文档编写 | JL-ARCH |
 | **知识库条目生成** | `JL-Ship-GenKnowledge` | 将问题和解决方案转换为标准化的知识库条目 | 客服支持，构建可搜索的知识库 | JL-ARCH |
 | **场景测试用例生成** | `JL-Build-Scenario-Test-Case` | 基于代码和日志生成完整的场景测试报告 | 测试设计、质量保障阶段 | JL-QA |
+| **项目文档管理** | `JL-Doc-README` | 自动化维护项目 README、CHANGELOG 和架构文档，构建活文档体系 | 迭代交付、发布上线阶段 | JL-ARCH |
 | **遗留系统迁移** | `JL-System-Migration` | 遗留系统现代化迁移（Java 8->17, COLA架构），确保业务逻辑零偏差 | 系统重构、技术栈升级阶段 | JL-ARCH, JL-QA |
 | **代码审查** | `JL-Build-ReviewCode` | 基于技术规范进行深度代码合规性审查 | 代码提交前审查、质量把控 | JL-QA |
 
@@ -327,6 +328,27 @@ JL-Build-ReviewCode
 
 ---
 
+### 7. 项目文档管理 (JL-Doc-README)
+
+自动化维护项目 README、CHANGELOG 和架构文档，构建活文档体系。
+
+- **功能**: 将研发过程中的散点文档串联成有机整体，包含：
+    - **门户索引**: 自动生成/更新标准化的 `README.md`
+    - **演进记录**: 基于产研文档和审查报告自动生成语义化 `CHANGELOG`
+    - **架构设计**: 自动同步最新的 C4 架构图到 `ARCHITECTURE.md`
+    - **特性归档**: 将需求规格和测试用例归档到 `docs/FEATURES/`
+- **工作流模式**:
+    - `init` - 初始化文档结构
+    - `update` - 更新文档
+- **核心价值**:
+    - **活文档**: 确保文档随代码迭代而自动更新
+    - **单一数据源**: 代码和过程资产（SPEC/TEST）作为文档的源头
+- **调用指令**: `JL-Doc-README`
+- **使用方式**:
+    在完成 `JL-Design-DDD` 或 `JL-System-Migration` 后执行，或在每次版本发布前执行。
+
+---
+
 ## 项目结构
 
 ```
@@ -345,6 +367,10 @@ mamingming-bmad-expansion/
 │   ├── JL-Template-Knowledge-Entry.md  # 知识库条目模板
 │   ├── JL-Template-Requirements-Design.md  # 产研设计文档模板
 │   ├── JL-Template-Migration-Context.md    # 迁移上下文报告模板
+│   ├── JL-Template-README.md               # 项目门户模板
+│   ├── JL-Template-Changelog.md            # 变更日志模板
+│   ├── JL-Template-Architecture.md         # 架构设计模板
+│   ├── JL-Template-Integration.md          # 接入指南模板
 │   └── JL-Template-Scenario-Test-Case.md   # 场景测试用例模板
 ├── workflows/                           # 工作流定义 (模块化目录结构)
 │   ├── JL-Design-DDD/                  # DDD系统设计工作流
@@ -376,6 +402,16 @@ mamingming-bmad-expansion/
 │   │       ├── 3-db-migration-instructions.md
 │   │       ├── 4-layered-refactoring-instructions.md
 │   │       └── 5-e2e-verification-instructions.md
+│   ├── JL-Doc-README/                  # 文档管理工作流
+│   │   ├── workflow.yaml
+│   │   ├── instructions.md
+│   │   ├── checklist.md
+│   │   └── workflows/
+│   │       ├── init-project-docs.md
+│   │       ├── update-changelog.md
+│   │       ├── update-architecture.md
+│   │       ├── update-features.md
+│   │       └── update-integration.md
 │   ├── JL-Build-Scenario-Test-Case/    # 场景测试用例工作流
 │   │   ├── workflow.yaml
 │   │   ├── instructions.md
@@ -464,6 +500,11 @@ JL-{Phase}-{Name}/
 - **自定义配置**: 可修改agents、workflows、templates以适应团队特定需求
 
 ## 更新日志
+
+- **v3.3.0**: 新增项目文档管理能力
+  - 新增 `JL-Doc-README` 工作流，构建“活文档”体系
+  - 支持自动化生成 CHANGELOG、更新架构图、归档功能规格
+  - 实现了 `JL-Design-DDD` 和 `JL-System-Migration` 与文档更新的闭环
 
 - **v3.2.0**: 新增遗留系统迁移能力
   - 新增 `JL-System-Migration` 工作流，支持 Java 8->17 及 COLA 架构迁移

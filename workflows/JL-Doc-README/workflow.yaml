@@ -1,0 +1,50 @@
+# 项目文档管理工作流配置
+name: "JL-Doc-README"
+version: "1.0.0"
+description: "自动化维护项目 README、CHANGELOG 和架构文档，构建活文档体系"
+author: "JL"
+
+# 关键变量配置
+config_source: "{project-root}/_bmad/bmm/config.yaml"
+output_folder: "{config_source}:output_folder"
+user_name: "{config_source}:user_name"
+communication_language: "{config_source}:communication_language"
+date: system-generated
+
+# 模块路径
+installed_path: "{project-root}/_bmad/bmm/workflows/JL-Doc-README"
+instructions: "{installed_path}/instructions.md"
+validation: "{installed_path}/checklist.md"
+
+# 模板文件
+templates:
+  readme: "{project-root}/_bmad/bmm/templates/JL-Template-README.md"
+  changelog: "{project-root}/_bmad/bmm/templates/JL-Template-Changelog.md"
+  integration: "{project-root}/_bmad/bmm/templates/JL-Template-Integration.md"
+  architecture: "{project-root}/_bmad/bmm/templates/JL-Template-Architecture.md"
+
+# 输入配置
+inputs:
+  project_root:
+    description: "项目根目录"
+    default: "{project-root}"
+  docs_dir:
+    description: "文档存放目录"
+    default: "{project-root}/docs"
+
+# 核心配置：触发方式
+trigger:
+  type: "command"
+  pattern: "JL-Doc-README"
+
+# 工作流模式
+modes:
+  - id: "init"
+    name: "初始化文档结构"
+    description: "构建标准文档目录树，生成 README 和 v0.0.0 CHANGELOG"
+  - id: "update"
+    name: "更新文档"
+    description: "收集最近的产研文档、测试报告，更新 CHANGELOG 和 FEATURES"
+  - id: "resume"
+    name: "恢复任务"
+    description: "从上次中断的步骤继续"

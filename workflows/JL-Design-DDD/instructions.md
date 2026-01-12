@@ -385,7 +385,7 @@
   <ask>准备好开始 TDD 编码了吗？[y/n]</ask>
 
   <check if="y">
-    <action>加载并执行: {installed_path}/workflows/tdd-implementation-instructions.md</action>
+    <action>加载并启动交互式会话: {installed_path}/workflows/tdd-implementation-instructions.md</action>
   </check>
   
   <check if="n">
@@ -443,6 +443,12 @@
 - `JL-Build-Scenario-Test-Case` - 生成测试规格
 - `JL-Build-ReviewCode` - 代码评审
 
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+⚠️ **文档同步提醒**
+
+设计与实现工作已完成，请执行以下指令以归档 SPEC 和 TEST_CASES，并更新项目门户：
+
+`JL-Doc-README`
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 </output>
 
