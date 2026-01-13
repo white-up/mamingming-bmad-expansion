@@ -7,7 +7,14 @@
   <action>检查是否有新的 DDD 建模报告</action>
   <check if="有新报告">
     <action>从 DDD 报告中提取 C4 Context 和 Container 图</action>
-    <action>更新 `docs/ARCHITECTURE.md` 中的 Mermaid 图表代码</action>
+    <output>
+    **架构图更新**:
+    即将用 DDD 报告中的 C4 图更新 `docs/ARCHITECTURE.md`。
+    [确认 / 跳过]
+    </output>
+    <check if="确认">
+      <action>更新 Mermaid 图表代码</action>
+    </check>
   </check>
 </step>
 
@@ -19,6 +26,7 @@
 <step n="4.3.3" goal="更新技术债">
   <action>从迁移上下文报告或代码审查报告中提取新的 Tech Debt</action>
   <action>更新文档中的“技术/逻辑债务”章节</action>
+  <output>✓ 架构文档已更新。</output>
 </step>
 
 </workflow>

@@ -36,7 +36,7 @@ author: "JL"
 </step>
 
 <step n="2" goal="初始化文档结构" if="current_phase == 'init_structure'">
-  <action>加载并执行: {installed_path}/workflows/init-project-docs.md</action>
+  <action>加载并执行: {installed_path}/workflows/1-init-project-docs.md</action>
   
   <check if="init_completed == true">
     <action>设置 current_phase = "collect_inputs"</action>
@@ -71,10 +71,10 @@ author: "JL"
   <output>正在更新文档体系...</output>
   
   <action>执行子工作流:
-  1. **更新 CHANGELOG**: {installed_path}/workflows/update-changelog.md
-  2. **更新 FEATURES**: {installed_path}/workflows/update-features.md
-  3. **更新 ARCHITECTURE**: {installed_path}/workflows/update-architecture.md
-  4. **更新 INTEGRATION**: {installed_path}/workflows/update-integration.md
+  1. **更新 CHANGELOG**: {installed_path}/workflows/2-update-changelog.md
+  2. **更新 FEATURES**: {installed_path}/workflows/3-update-features.md
+  3. **更新 ARCHITECTURE**: {installed_path}/workflows/4-update-architecture.md
+  4. **更新 INTEGRATION**: {installed_path}/workflows/5-update-integration.md
   </action>
   
   <check if="all_updates_completed == true">

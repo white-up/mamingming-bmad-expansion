@@ -35,4 +35,8 @@
   </check>
 </step>
 
+<step n="4.1.3" goal="更新 README 链接">
+  <action>更新 README.md 中的“最新版本”或相关链接指向新的 CHANGELOG</action>
+</step>
+
 </workflow>
