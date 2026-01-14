@@ -13,10 +13,19 @@
   </check>
 </step>
 
-<step n="4.2.2" goal="归档测试用例">
+<step n="4.2.2" goal="归档测试用例与脚本">
+  <!-- 归档 Markdown 报告 -->
   <action>检查【场景测试报告】(Scenario_Test_Case_*.md)</action>
   <check if="存在">
-    <action>复制文档并重命名为 `TEST_CASES.md` 到对应模块目录</action>
+    <action>识别所属模块 (若未识别则询问)</action>
+    <action>复制文档并重命名为 `QA.md` 到 `docs/FEATURES/{{module_name}}/`</action>
+  </check>
+
+  <!-- 归档 Python 脚本 -->
+  <action>检查【自动化测试脚本】(CaseTest_*.py)</action>
+  <check if="存在">
+    <action>复制脚本到 `docs/FEATURES/{{module_name}}/` (保持文件名或规范化命名)</action>
+    <output>✓ 测试脚本已归档。</output>
   </check>
 </step>
 
