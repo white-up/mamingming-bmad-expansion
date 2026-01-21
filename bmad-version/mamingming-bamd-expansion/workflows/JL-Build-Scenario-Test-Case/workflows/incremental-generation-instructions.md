@@ -9,24 +9,19 @@
 <step n="I.1" goal="加载现有报告">
 
 <action>加载最新的测试报告: {inputs.output_dir}/Scenario_Test_Case_*.md</action>
+<action>加载关联的 Python 脚本: {inputs.output_dir}/CaseTest_*.py</action>
+
 <action>解析现有报告结构：
 - 提取已有场景列表
 - 提取业务逻辑描述
-- 提取现有脚本
+- 提取现有 SQL/cURL 脚本
 </action>
 
-<output>**现有报告加载完成 ✓**
+<output>**现有资源加载完成 ✓**
 
-**现有场景统计:**
-| 场景类型 | 数量 |
-|---------|-----|
-| 正常流程 | {{existing_happy_path}} |
-| 异常流程 | {{existing_exception}} |
-| 边界测试 | {{existing_boundary}} |
-| 其他 | {{existing_other}} |
-| **总计** | **{{existing_total}}** |
-
-**已有场景 ID 范围:** TC-001 ~ TC-{{max_id}}
+**场景统计:**
+- 文档场景数: {{existing_total}}
+- 关联脚本: {{python_script_name}} ({{has_script}})
 
 请描述需要添加的新场景：
 1. 新的业务场景
@@ -49,12 +44,6 @@
 - 标注关键测试点
 </action>
 
-<action>检查与现有场景的关系：
-- 是否有重复
-- 是否有依赖
-- 是否需要修改现有场景
-</action>
-
 <output>**新场景分析 🔍**
 
 **识别的新场景:**
@@ -63,9 +52,6 @@
 {{#each new_scenarios}}
 | TC-{{new_id}} | {{name}} | {{type}} | {{precondition}} | {{expected}} |
 {{/each}}
-
-**与现有场景关系:**
-{{relationship_analysis}}
 
 确认添加这些场景？[y/n/修改]</output>
 
@@ -78,7 +64,7 @@
 <action>为新场景生成执行脚本：
 - cURL 请求脚本
 - SQL 数据脚本
-- Python 测试函数
+- **Python 测试函数** (追加模式)
 </action>
 
 <output>**新场景脚本生成 🔧**
@@ -96,7 +82,7 @@
 {{new_sql_scripts}}
 ```
 
-### 新增 Python 测试函数
+### 新增 Python 测试函数 (将追加到脚本文件)
 ```python
 {{new_python_functions}}
 ```
@@ -105,63 +91,31 @@
 
 </step>
 
-<step n="I.4" goal="合并到现有报告">
+<step n="I.4" goal="合并与保存">
 
-<action>将新场景合并到现有报告：
+<action>更新 Markdown 报告：
 1. 在场景概览表末尾添加新场景
-2. 更新业务逻辑描述（如需要）
-3. 在脚本集中添加新脚本
-4. 更新报告元数据
+2. 在脚本集中添加新 SQL/cURL 脚本
 </action>
 
-<action>生成合并后的完整报告</action>
-
-<output>**报告合并完成 ✓**
-
-**更新后的场景统计:**
-| 场景类型 | 原有 | 新增 | 合计 |
-|---------|-----|-----|-----|
-| 正常流程 | {{old_hp}} | {{new_hp}} | {{total_hp}} |
-| 异常流程 | {{old_ex}} | {{new_ex}} | {{total_ex}} |
-| 边界测试 | {{old_bd}} | {{new_bd}} | {{total_bd}} |
-| 其他 | {{old_ot}} | {{new_ot}} | {{total_ot}} |
-| **总计** | **{{old_total}}** | **{{new_total}}** | **{{grand_total}}** |
-
-准备保存更新后的报告？[y/n]</output>
-
-</step>
-
-<step n="I.5" goal="保存更新后的报告">
-
-<action>备份原报告到 .archive 目录</action>
-<action>保存更新后的报告（保持原文件名或使用新时间戳）</action>
-
-<action>更新状态文件:
-- 记录增量更新操作
-- 更新场景统计
-- 更新 last_updated 时间戳
+<action>更新 Python 脚本文件：
+1. 读取原文件
+2. 在类中追加新的 test_ 方法
+3. 写入更新后的文件
 </action>
 
-<output>**✓ 增量更新完成**
+<output>**合并完成 ✓**
 
-**更新详情:**
-- 原报告已备份
-- 新增场景: {{new_count}} 个
-- 更新后总场景: {{total_count}} 个
+准备保存更新后的文件？[y/n]</output>
 
-**文件位置**: {inputs.output_dir}/Scenario_Test_Case_{{timestamp}}.md
-
-是否继续添加更多场景？[y/完成]</output>
-
-<action>等待用户选择</action>
-
-<check if="用户选择继续">
-  <action>返回步骤 I.1</action>
-</check>
-
-<check if="用户选择完成">
-  <action>设置 report_generation_completed = true</action>
-  <action>返回主工作流路由器完成工作流</action>
+<check if="y">
+    <action>备份原文件</action>
+    <action>保存 Markdown 报告: {inputs.output_dir}/Scenario_Test_Case_{{timestamp}}.md</action>
+    <action>保存 Python 脚本: {inputs.output_dir}/CaseTest_{{module}}_{{timestamp}}.py</action>
+    
+    <output>**✓ 增量更新完成**
+    文件已更新。
+    </output>
 </check>
 
 </step>

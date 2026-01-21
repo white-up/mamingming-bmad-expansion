@@ -151,34 +151,42 @@ JL-Build-ReviewCode
 
 | 模块名称 | 快捷指令 | 功能说明 | 适用场景 | 执行Agent |
 |---------|---------|---------|---------|---------|
-| **DDD系统设计** | `JL-Design-DDD` | 基于需求文档，进行DDD领域建模并输出详细设计文档 | 需求分析、技术方案设计阶段 | JL-ARCH |
+| **DDD系统设计** | `JL-Design-DDD` | 从需求分析到DDD建模，再到TDD代码生成的全流程设计与实现 | 需求分析、设计、编码实现阶段 | JL-ARCH |
 | **代码逆向分析** | `JL-Ship-AnalyzeCode` | 对Java代码进行深度逆向分析，生成功能分析报告 | 代码理解、重构规划、文档编写 | JL-ARCH |
 | **知识库条目生成** | `JL-Ship-GenKnowledge` | 将问题和解决方案转换为标准化的知识库条目 | 客服支持，构建可搜索的知识库 | JL-ARCH |
 | **场景测试用例生成** | `JL-Build-Scenario-Test-Case` | 基于代码和日志生成完整的场景测试报告 | 测试设计、质量保障阶段 | JL-QA |
+| **项目文档管理** | `JL-Doc-README` | 自动化维护项目 README、CHANGELOG 和架构文档，构建活文档体系 | 迭代交付、发布上线阶段 | JL-ARCH |
+| **遗留系统迁移** | `JL-System-Migration` | 遗留系统现代化迁移（Java 8->17, COLA架构），确保业务逻辑零偏差 | 系统重构、技术栈升级阶段 | JL-ARCH, JL-QA |
 | **代码审查** | `JL-Build-ReviewCode` | 基于技术规范进行深度代码合规性审查 | 代码提交前审查、质量把控 | JL-QA |
 
 ---
 
 ### 1. DDD系统设计 (JL-Design-DDD)
 
-基于需求文档，进行DDD领域建模并输出详细设计文档。
+从需求分析到DDD建模，再到TDD代码生成的全流程设计与实现。
 
-- **功能**: 完整的DDD设计流程，包含：
+- **功能**: 端到端的DDD研发流程，包含：
     - **产研需求设计**: 结构化、无歧义、可直接落地的产研通用设计文档
     - **事件风暴建模**: 与用户多轮对话绘制事件风暴图，确保领域模型准确性
     - **DDD建模报告**: 严格遵循DDD规范的完整建模报告
+    - **知识补充与复盘**: 生成《架构决策与领域知识指南》，传授设计背后的权衡与行业暗知识
+    - **TDD代码实现**: 基于"Red-Green-Refactor"流程，交互式生成核心代码骨架（Contract -> Test -> Implementation）
 - **工作流模式**:
-    - `full_design` - 完整设计流程（产研设计 → 事件风暴 → DDD建模）
+    - `full_design` - 完整设计流程（需求 -> 建模 -> 知识 -> TDD实现）
     - `requirements_only` - 仅产研设计
     - `ddd_only` - 仅DDD建模
     - `resume` - 恢复中断的设计
+- **核心特性 (TDD实现)**:
+    - **待实现清单确认**: 自动提取待实现类，支持人工筛选
+    - **严格TDD流程**: 契约定义 -> 编写失败测试 -> 最小化实现 -> 补充验证 -> 规范重构
+    - **交互式生成**: 每一步生成代码后需人工确认，支持直接写入项目源码目录
 - **调用指令**: `JL-Design-DDD`
 - **相关文件**:
     - Agent: `agents/JL-ARCH.agent.yaml`
     - Workflow: `workflows/JL-Design-DDD/`
     - Templates: `templates/JL-Template-Requirements-Design.md`, `templates/JL-Template-DDD-Design.md`
 - **使用方式**:
-    选中需求文档或相关代码，输入 `JL-Design-DDD`。系统会分阶段确认需求边界、生成设计文档、进行事件风暴建模，最终输出完整的DDD建模报告。
+    选中需求文档或相关代码，输入 `JL-Design-DDD`。系统会引导您完成从需求澄清、领域建模到代码生成的全过程。
 
 ---
 
@@ -293,6 +301,54 @@ JL-Build-ReviewCode
 
 ---
 
+### 6. 遗留系统迁移 (JL-System-Migration)
+
+遗留系统现代化迁移（Java 8->17, COLA架构），确保业务逻辑零偏差。
+
+- **功能**: 风险可控的渐进式重构流程，包含：
+    - **领域边界识别**: 不写新代码，先识别旧代码的业务边界和依赖
+    - **黄金标准测试**: 建立"Golden Master"测试集，锁定旧系统行为
+    - **数据库迁移**: 生成可验证的 Schema 转换脚本和数据校验脚本
+    - **分层重构**: 严格遵循 COLA 架构分层重构 (Infra -> Domain -> App)
+    - **E2E 验证**: 使用黄金数据集进行黑盒回归测试
+- **工作流模式**:
+    - `full_migration` - 完整迁移流程
+    - `resume` - 恢复迁移
+- **核心理念**:
+    - **逻辑零偏差**: 除非修复 Bug，否则严禁修改核心业务规则
+    - **测试先行**: 在生成实现代码前，必须先定义测试和契约
+    - **分层执行**: 避免 AI 上下文混乱，严格分层生成代码
+- **调用指令**: `JL-System-Migration`
+- **相关文件**:
+    - Agent: `agents/JL-ARCH.agent.yaml`, `agents/JL-QA.agent.yaml`
+    - Workflow: `workflows/JL-System-Migration/`
+    - Template: `templates/JL-Template-Migration-Context.md`
+- **使用方式**:
+    选中旧系统的代码片段，输入 `JL-System-Migration`。系统会引导您进行从分析到重构的完整迁移过程。
+
+---
+
+### 7. 项目文档管理 (JL-Doc-README)
+
+自动化维护项目 README、CHANGELOG 和架构文档，构建活文档体系。
+
+- **功能**: 将研发过程中的散点文档串联成有机整体，包含：
+    - **门户索引**: 自动生成/更新标准化的 `README.md`
+    - **演进记录**: 基于产研文档和审查报告自动生成语义化 `CHANGELOG`
+    - **架构设计**: 自动同步最新的 C4 架构图到 `ARCHITECTURE.md`
+    - **特性归档**: 将需求规格和测试用例归档到 `docs/FEATURES/`
+- **工作流模式**:
+    - `init` - 初始化文档结构
+    - `update` - 更新文档
+- **核心价值**:
+    - **活文档**: 确保文档随代码迭代而自动更新
+    - **单一数据源**: 代码和过程资产（SPEC/TEST）作为文档的源头
+- **调用指令**: `JL-Doc-README`
+- **使用方式**:
+    在完成 `JL-Design-DDD` 或 `JL-System-Migration` 后执行，或在每次版本发布前执行。
+
+---
+
 ## 项目结构
 
 ```
@@ -310,6 +366,11 @@ mamingming-bmad-expansion/
 │   ├── JL-Template-DDD-Design.md       # DDD建模报告模板
 │   ├── JL-Template-Knowledge-Entry.md  # 知识库条目模板
 │   ├── JL-Template-Requirements-Design.md  # 产研设计文档模板
+│   ├── JL-Template-Migration-Context.md    # 迁移上下文报告模板
+│   ├── JL-Template-README.md               # 项目门户模板
+│   ├── JL-Template-Changelog.md            # 变更日志模板
+│   ├── JL-Template-Architecture.md         # 架构设计模板
+│   ├── JL-Template-Integration.md          # 接入指南模板
 │   └── JL-Template-Scenario-Test-Case.md   # 场景测试用例模板
 ├── workflows/                           # 工作流定义 (模块化目录结构)
 │   ├── JL-Design-DDD/                  # DDD系统设计工作流
@@ -319,7 +380,9 @@ mamingming-bmad-expansion/
 │   │   └── workflows/                  # 子工作流
 │   │       ├── requirements-design-instructions.md
 │   │       ├── event-storming-instructions.md
-│   │       └── ddd-modeling-instructions.md
+│   │       ├── ddd-modeling-instructions.md
+│   │       ├── knowledge-supplement-instructions.md
+│   │       └── tdd-implementation-instructions.md
 │   ├── JL-Build-ReviewCode/            # 代码审查工作流
 │   │   ├── workflow.yaml
 │   │   ├── instructions.md
@@ -329,6 +392,26 @@ mamingming-bmad-expansion/
 │   │       ├── architecture-review-instructions.md
 │   │       ├── security-review-instructions.md
 │   │       └── report-generation-instructions.md
+│   ├── JL-System-Migration/            # 遗留系统迁移工作流
+│   │   ├── workflow.yaml
+│   │   ├── instructions.md
+│   │   ├── checklist.md
+│   │   └── workflows/
+│   │       ├── 1-scope-analysis-instructions.md
+│   │       ├── 2-golden-test-gen-instructions.md
+│   │       ├── 3-db-migration-instructions.md
+│   │       ├── 4-layered-refactoring-instructions.md
+│   │       └── 5-e2e-verification-instructions.md
+│   ├── JL-Doc-README/                  # 文档管理工作流
+│   │   ├── workflow.yaml
+│   │   ├── instructions.md
+│   │   ├── checklist.md
+│   │   └── workflows/
+│   │       ├── init-project-docs.md
+│   │       ├── update-changelog.md
+│   │       ├── update-architecture.md
+│   │       ├── update-features.md
+│   │       └── update-integration.md
 │   ├── JL-Build-Scenario-Test-Case/    # 场景测试用例工作流
 │   │   ├── workflow.yaml
 │   │   ├── instructions.md
@@ -417,6 +500,22 @@ JL-{Phase}-{Name}/
 - **自定义配置**: 可修改agents、workflows、templates以适应团队特定需求
 
 ## 更新日志
+
+- **v3.3.0**: 新增项目文档管理能力
+  - 新增 `JL-Doc-README` 工作流，构建“活文档”体系
+  - 支持自动化生成 CHANGELOG、更新架构图、归档功能规格
+  - 实现了 `JL-Design-DDD` 和 `JL-System-Migration` 与文档更新的闭环
+
+- **v3.2.0**: 新增遗留系统迁移能力
+  - 新增 `JL-System-Migration` 工作流，支持 Java 8->17 及 COLA 架构迁移
+  - 引入 "Golden Master" 测试策略，确保重构过程业务逻辑零偏差
+  - 支持可验证的数据库迁移和数据校验脚本生成
+
+- **v3.1.0**: 增强 DDD 设计与实现能力
+  - 新增 **知识补充与复盘** 阶段：生成架构决策指南，传授行业知识
+  - 新增 **TDD 代码实现** 阶段：支持交互式生成核心代码骨架
+  - 优化 TDD 流程：支持 Contract -> Test -> Implementation -> Verify -> Refactor 严谨流程
+  - 优化代码生成：支持基于清单的生成确认，直接写入项目源码目录
 
 - **v3.0.0**: 工作流模块化重构
   - 采用模块化目录结构，每个工作流独立目录

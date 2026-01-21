@@ -77,6 +77,14 @@
     <check if="current_phase == ddd_modeling">
       <action>加载并执行: {installed_path}/workflows/ddd-modeling-instructions.md 带恢复上下文</action>
     </check>
+
+    <check if="current_phase == knowledge_supplement">
+      <action>加载并执行: {installed_path}/workflows/knowledge-supplement-instructions.md 带恢复上下文</action>
+    </check>
+
+    <check if="current_phase == tdd_implementation">
+      <action>加载并执行: {installed_path}/workflows/tdd-implementation-instructions.md 带恢复上下文</action>
+    </check>
   </check>
 
   <check if="用户选择 2">
@@ -200,10 +208,23 @@
   <output>
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   ✓ 产研统一设计已完成
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   
+  **📊 进度看板**
+  ```mermaid
+  gantt
+      title DDD设计进度
+      dateFormat YYYY-MM-DD
+      section 阶段
+      产研设计       :done,    p1, {{timestamps.started}}, 1d
+      事件风暴       :active,  p2, after p1, 1d
+      DDD建模        :         p3, after p2, 1d
+      知识补充       :         p4, after p3, 1d
+      TDD实现        :         p5, after p4, 2d
+  ```
+
+  **下一步计划:**
   我们即将进入 **事件风暴建模** 阶段。
-  
-  在此阶段，我们将：
   1. 识别领域事件、命令和聚合
   2. 绘制事件风暴图
   3. 识别业务热点和设计建议
@@ -238,10 +259,23 @@
   <output>
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   ✓ 事件风暴建模已完成
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   
+  **📊 进度看板**
+  ```mermaid
+  gantt
+      title DDD设计进度
+      dateFormat YYYY-MM-DD
+      section 阶段
+      产研设计       :done,    p1, {{timestamps.started}}, 1d
+      事件风暴       :done,    p2, after p1, 1d
+      DDD建模        :active,  p3, after p2, 1d
+      知识补充       :         p4, after p3, 1d
+      TDD实现        :         p5, after p4, 2d
+  ```
+  
+  **下一步计划:**
   我们即将进入 **DDD 领域建模** 阶段。
-  
-  在此阶段，我们将：
   1. 细化限界上下文
   2. 设计聚合根、实体和值对象
   3. 生成详细的类图和架构图
@@ -263,11 +297,110 @@
 
 </step>
 
-<step n="7" goal="完成并提供后续步骤">
+<step n="7" goal="完成 DDD 建模后转入知识补充">
 
 <check if="ddd_modeling_completed == true">
   <action>更新状态文件:
   - 添加到 completed_phases: {"phase": "ddd_modeling", "status": "completed", "timestamp": "{{now}}", "output": "{{ddd_doc_path}}"}
+  - 更新 current_phase = "knowledge_supplement"
+  - 更新 timestamps.completed = "{{now}}"
+  </action>
+
+  <output>
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ✓ DDD 领域建模已完成
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  
+  **📊 进度看板**
+  ```mermaid
+  gantt
+      title DDD设计进度
+      dateFormat YYYY-MM-DD
+      section 阶段
+      产研设计       :done,    p1, {{timestamps.started}}, 1d
+      事件风暴       :done,    p2, after p1, 1d
+      DDD建模        :done,    p3, after p2, 1d
+      知识补充       :active,  p4, after p3, 1d
+      TDD实现        :         p5, after p4, 2d
+  ```
+  
+  **下一步计划:**
+  我们即将进入 **知识补充与深度复盘** 阶段。
+  在此阶段，我将切换为“资深架构师导师”，为您生成《架构决策与领域知识指南》。
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  </output>
+
+  <ask>准备好开始知识补充了吗？[y/n]</ask>
+
+  <check if="y">
+    <action>加载并执行: {installed_path}/workflows/knowledge-supplement-instructions.md</action>
+  </check>
+  
+  <check if="n">
+    <action>显示: "工作流暂停。您可以稍后通过恢复模式生成知识指南。"</action>
+    <action>退出工作流</action>
+  </check>
+</check>
+
+</step>
+
+<step n="8" goal="完成知识补充后转入 TDD 代码实现">
+
+<check if="knowledge_supplement_completed == true">
+  <action>更新状态文件:
+  - 添加到 completed_phases: {"phase": "knowledge_supplement", "status": "completed", "timestamp": "{{now}}"}
+  - 更新 current_phase = "tdd_implementation"
+  - 更新 timestamps.completed = "{{now}}"
+  </action>
+
+  <output>
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ✓ 知识补充与复盘已完成
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  
+  **📊 进度看板**
+  ```mermaid
+  gantt
+      title DDD设计进度
+      dateFormat YYYY-MM-DD
+      section 阶段
+      产研设计       :done,    p1, {{timestamps.started}}, 1d
+      事件风暴       :done,    p2, after p1, 1d
+      DDD建模        :done,    p3, after p2, 1d
+      知识补充       :done,    p4, after p3, 1d
+      TDD实现        :active,  p5, after p4, 2d
+  ```
+  
+  **下一步计划:**
+  我们即将进入最后一个阶段：**TDD 代码实现**。
+  
+  在此阶段，我将作为您的 TDD 结对伙伴，按照 Red-Green-Refactor 流程：
+  1. 定义契约 (Contract)
+  2. 编写测试 (Red)
+  3. 最小化实现 (Green)
+  4. 规范检查 (Refactor)
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  </output>
+
+  <ask>准备好开始 TDD 编码了吗？[y/n]</ask>
+
+  <check if="y">
+    <action>加载并启动交互式会话: {installed_path}/workflows/tdd-implementation-instructions.md</action>
+  </check>
+  
+  <check if="n">
+    <action>显示: "工作流暂停。您可以稍后通过恢复模式生成代码。"</action>
+    <action>退出工作流</action>
+  </check>
+</check>
+
+</step>
+
+<step n="9" goal="完成并提供后续步骤">
+
+<check if="tdd_implementation_completed == true">
+  <action>更新状态文件:
+  - 添加到 completed_phases: {"phase": "tdd_implementation", "status": "completed", "timestamp": "{{now}}"}
   - 更新 current_phase = "completed"
   - 更新 timestamps.completed = "{{now}}"
   </action>
@@ -301,15 +434,24 @@
 
 **后续步骤:**
 
-1. 审阅产研统一设计文档，确保业务逻辑正确
-2. 检查 DDD 建模报告中的领域模型是否准确反映业务
-3. 与产品团队确认边界定义和验收标准
-4. 进入代码实现阶段时，参考 DDD 建模报告中的类图和目录结构
+1. **直接运行测试**: TDD 代码已直接写入您的项目源码目录。请在 IDE 中打开项目，运行所有测试用例 (Green)，验证功能实现。
+2. **阅读设计指南**: 查阅《架构决策与领域知识指南》，深入理解设计背后的权衡。
+3. **完善细节**: 目前生成的是核心骨架和业务逻辑，您可能需要继续补充非核心的辅助代码。
 
-**相关工作流:**
-- `JL-Build-Scenario-Test-Case` - 生成测试规格
-- `JL-Build-ReviewCode` - 代码评审
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🚀 **推荐的后续工作流 (按顺序执行)**
 
+1. **生成场景测试 (QA)**:
+   执行 `JL-Build-Scenario-Test-Case`
+   *目的: 基于刚生成的代码，自动生成端到端的场景测试报告和自动化脚本。*
+
+2. **代码质量审查 (QA)**:
+   执行 `JL-Build-ReviewCode`
+   *目的: 对 TDD 实现的代码进行深度合规性检查（命名、架构约束、安全）。*
+
+3. **文档归档与更新 (Doc)**:
+   执行 `JL-Doc-README`
+   *目的: 自动将 SPEC、测试用例归档到 docs/FEATURES，并更新 README 和 CHANGELOG。*
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 </output>
 

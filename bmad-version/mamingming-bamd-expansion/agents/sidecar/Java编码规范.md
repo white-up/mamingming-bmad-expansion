@@ -103,13 +103,28 @@ src
     * 禁止使用拼音或拼音首字母。
     * 禁止无意义的缩写（如 `AbstractClass` 缩写为 `AbsCls`）。
 
+## 架构风格与技术选型偏好
+
+### 1. 贫血模型与分层职责
+本规范明确采用**贫血模型 (Anemic Domain Model)**，通过严格的 Service 分层来组织逻辑：
+*   **Domain Entity (贫血)**: 仅包含数据属性、Getter/Setter 和基础校验（如 `@NotNull`）。**严禁**包含核心业务计算逻辑。
+*   **Domain Service (充血)**: 承载所有的**业务规则**、状态流转、计算逻辑。它是业务逻辑的唯一入口。
+*   **Application Service (编排)**: 仅负责流程编排、事务控制 (`@Transactional`) 和 DTO 转换。**严禁**包含业务分支逻辑。
+
+### 2. 代码简化 (Lombok)
+*   **推荐使用**：`@Data`, `@Builder`, `@NoArgsConstructor`, `@AllArgsConstructor` 等注解简化 POJO 代码。
+*   **注意**：在使用 `@Data` 时注意 `equals` 和 `hashCode` 的重写规则，特别是在 JPA 实体中。
+
+### 3. Java 版本
+*   **基准版本**: Java 17+。充分利用 Record, Switch Expression, Text Block 等新特性。
+
 ## 对象模型与数据流转
 ### 对象定义
 
 | 对象类型      | 所在层级 | 后缀                       | 描述 | 规则 |
 |-----------| --- |--------------------------| --- | --- |
 | **DTO**   | Client | `Request/Response/DTO`   | 数据传输对象 | 禁止包含业务逻辑。 |
-| **model** | Domain | 无或 `Value/Cmd/Aggregate` | 领域实体 | 包含业务属性和**业务行为**，不依赖框架注解。 |
+| **model** | Domain | 无或 `Value/Cmd/Aggregate` | 领域实体 | 包含业务属性，不包含复杂行为，不依赖框架注解。 |
 | **PO**    | Infra | `PO/DO`                  | 持久化对象 | 与数据库表一一对应，包含 `@Table` 等注解。 |
 
 ### 转换红线
@@ -172,24 +187,27 @@ src
     * **粒度**：`@Transactional` 范围要尽可能小。
     * **RPC 隔离**：**严禁**在事务方法内部进行 HTTP/RPC 远程调用（会导致数据库连接池被耗尽）。若必须调用，应在事务外执行，或通过消息队列解耦。
 3. **N+1 问题**：
-    * 禁止在循环中执行数据库查询。必须改为批量查询 (`where id in (...)`) 或使用 Map 组装数据。
+    * **禁止**在循环中执行数据库查询。必须改为批量查询 (`where id in (...)`) 或使用 Map 组装数据。
 
-## 测试规范
+## 测试规范 (BDD Style)
 
 ### 单元测试 (Unit Test)
 
-1. **范围**：重点覆盖 `Domain Service` 和 `Application Service` 中的复杂逻辑。`Controller` 和 `Repository` 简单方法可不测。
-2. **工具**：JUnit 5 + Mockito。
-3. **原则**：
+1. **范围**：重点覆盖 `Domain Service` (核心业务) 和 `Application Service` (流程编排)。
+2. **工具**：**JUnit 5 + Mockito**。
+3. **风格**：采用 **BDD (Behavior-Driven Development)** 风格。
+    * **结构**：严格遵循 `// Given` (准备数据/Mock) -> `// When` (执行调用) -> `// Then` (断言结果/验证行为) 三段式。
+    * **命名**：使用语义化命名，格式为 `should_{ExpectedBehavior}_when_{State}`。
+      * *Example*: `should_apply_discount_when_user_is_vip()`
+
+4. **原则**：
     * **AIR 原则**：Automatic (自动化), Independent (独立), Repeatable (可重复)。
     * 不依赖 Spring 容器启动（速度快），外部依赖全部 Mock。
-4. **结构**：Given (准备数据/Mock) -> When (执行调用) -> Then (断言结果/验证行为)。
 
 ### 命名与注释
 
 * 测试类：`{TargetClass}Test`
-* 测试方法：`{methodName}_{condition}_{expectedResult}`
-* 例如：`calculatePrice_vipUser_shouldApplyDiscount()`
+* 测试方法：`should_{ExpectedBehavior}_when_{State}`
 
 
 ## Code Review 审查清单 (Checklist)
@@ -203,7 +221,7 @@ src
 * [ ] **异常**：是否吞掉了异常？日志是否包含足够上下文且无拼接？
 * [ ] **数据库**：循环中是否有 SQL 查询？事务中是否有 RPC 调用？
 * [ ] **逻辑**：复杂的 if-else 是否可以优化？是否有明显的空指针风险？
-* [ ] **测试**：核心业务逻辑是否有对应的单测覆盖？
+* [ ] **测试**：是否采用了 BDD 风格？核心业务逻辑是否有单测覆盖？
 
 ## 注释要求
 1. 使用Javadoc注释，并遵循正确的格式和样式
